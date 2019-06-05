@@ -1,0 +1,146 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% block title %} Registro de Empleados {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<style>
+    .msg {
+        background: #fefefe;
+        color: #666666;
+        font-weight: bold;
+        font-size: small;
+        padding: 12px;
+        padding-left: 16px;
+        border-top: solid 3px #CCCCCC;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        box-shadow: 0 10px 10px -5px rgba(0,0,0,.08);
+    }
+    .msg-danger {
+        border-color: #ec8282;
+    }
+</style>
+<div class="right_col" role="main">
+    <div class="container">
+        {% if error %}
+            <div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+                <div class="msg msg-danger">
+                    <span>{{error}}</span>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            {% if messages %}
+                {% for message in messages %}
+                    <input type = "hidden" id = "myVar" name = "variable" value = "{{message}}">
+                {% endfor %}
+            {% endif%}
+            <div class="col-md-4 col-md-offset-4 col-sm-12 col-xs-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"> Introdusca Su C.I.</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div  id="formulario"  class="formulario">
+                            <form method="GET" action="/empleado/update_empleado/">
+                                <div class="input-group add-on">
+                                    <input class="form-control" placeholder="Introdusca el C.I." name="user_id" id="user_id" type="text">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-default" id="enviar" type="submit" name="form_type">
+                                            <i class="glyphicon glyphicon-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!--<div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="panel panel-primary">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <input type = "hidden" id = "myVar" name = "variable" value = "{{message}}">
+                        {% endfor %}
+                    {% endif%}
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Editar de Empleado</h3>
+                    </div>
+                    
+                    <form action="" method="POST" name="myform">
+                        {% csrf_token %}
+                        <div class="panel-body">
+                            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        
+                                            <div class="row">
+                                                <div class="col-md-4  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Nombre</label>
+                                                        {{form.nombre}}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Apellido Paterno</label>
+                                                        {{form.apaterno}}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Apellido Materno</label>
+                                                        {{form.amaterno}}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Carnet de Identidad</label>
+                                                        {{form.ci}}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2  col-xs-2">
+                                                    <div class="form-group">
+                                                        
+                                                        <label class="control-label" for="email">U.E.</label>
+                                                        {{form.ue}}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Secretaria</label>
+                                                        {{form.secretaria}}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Nº de Cuenta</label>
+                                                        {{form.bcontrol}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                            
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>  
+                        
+                        <div class="panel-body">
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-info btn-lg fa fa-floppy-o"> Registrar</button>
+
+                                <a class="btn btn-danger btn-lg fa fa-undo" data-original-title="Edit" data-placement="top" href="{%url "viaticos:detail" %}"> Cancelar</a> 
+                            </div> 
+                        </div>
+                    </form>        
+                </div>
+            </div>-->
+        </div>     
+    </div> 
+</div> 
+{% endblock content %}

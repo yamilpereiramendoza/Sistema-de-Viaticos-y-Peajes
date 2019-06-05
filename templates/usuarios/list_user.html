@@ -1,0 +1,95 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% block title %} Centralizador {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Lista de Usuarios del Sistema</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                   
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">      
+                <div class="table-responsive">                                                
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                            <tr class="headings">
+                                <th>N°</th>
+                                <th>NOMBRES Y APELLIDOS</th>                        
+                                <th>NOMBRE DE USUARIO</th>
+                                
+                                <th>TIPO</th>
+                                
+                                <th>FECHA DE REGISTRO</th>
+                                <th>ESTADO</th>  
+                                {% if user.is_superuser %}
+                                    <th class="td-actions" id="table_action">Acciones</th>
+                                {% endif %}                        
+                            </tr>
+                        
+                        </thead>
+                        <tbody>
+                            {% for usu in usuario %}
+                                <tr class="even pointer">
+                                    <td>{{usu.id}}</td>
+                                    <td>{{usu.first_name|upper}} {{usu.last_name|upper}} </td>
+                                    <td>{{usu.username}}</td>                                    
+                                    <td>
+                                        {% if usu.is_superuser == True %}
+                                            Admin 
+                                        {%else%}
+                                            Usuario
+                                        {% endif %}
+                                    </td>                                    
+                                    <td>
+                                        {% if usu.date_joined != None %}
+                                            {{usu.date_joined|date:'d/m/Y'}}
+                                        {%else%}
+                                            SIN FECHA DE REGISTRO
+                                        {%endif%}
+                                    </td>
+                                    <td>
+                                        {% if usu.is_active == True %}
+                                            <span class="label label-success">Activo</span>
+                                        {%else%}
+                                        <span class="label label-warning">Inactivo</span>
+                                        {%endif%}
+                                    </td>
+                                    {% if user.is_superuser %}
+                                        {% if not usu.is_superuser == True %}
+                                            <td>                                            
+                                                {% if usu.is_active == True %}
+                                                    <a href="{% url 'empleados:dar_de_baja_usuario' usu.id %}" class="btn btn-danger btn-xs"><i class="fa fa-thumbs-down"></i> Dar Baja </a>                                                                                                  
+                                                {%else%}
+                                                    <a href="{% url 'empleados:dar_de_alta_usuario' usu.id %}" class="btn btn-dark btn-xs"><i class="fa fa-thumbs-up"></i> Dar Alta </a>                                                                                                
+                                                {%endif%}
+                                                
+                                                <a href="" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Editar</a>
+                                            </td>
+                                        {%else%}
+                                                <td></td>
+                                        {%endif%}
+                                    {% endif %}                              
+                                </tr>
+                            {% endfor %}                      
+                        </tbody>
+                    </table>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

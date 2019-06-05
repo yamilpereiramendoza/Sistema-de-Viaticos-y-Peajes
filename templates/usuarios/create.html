@@ -1,0 +1,197 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% block title %} Registro de Empleados {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<style>
+    input[name=nombre],input[name=apellidoP],input[name=apellidoM],input[name=fecharegistro] {
+        pointer-events: none;
+        border: none;
+    }
+</style>
+<div class="right_col" role="main">
+    <div class="col-md-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Formulario de Registro de Usuario</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>                    
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <input type = "hidden" id = "myVar" name = "variable" value = "{{message}}">
+                {% endfor %}
+            {% endif%}
+            <div class="row"> 
+                <div class="title_right">
+                    <form id="buscar_user_ajax" class="navbar-form" role="search" action="{% url "empleados:busquedaUsuario" %}" >
+                        {% csrf_token %}
+                        <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right top_search">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="user_id" id="user_id" placeholder="Introdusca un C.I...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default"  id="enviar" type="submit">Buscar</button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>                 
+            </div>
+            <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12" style="display: none;" id="errorajax">
+                <div class="alert" style="background-color: rgba(255, 199, 199, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                        ×</button>
+                    <span class="glyphicon glyphicon-remove"></span> <strong style="color: black;" id="messageajax"></strong>
+                </div>
+            </div>
+            <div class="x_content">
+                <form action="{% url "empleados:create" %}" method="POST" name="myform" class="form-horizontal form-label-left input_mask">
+                    {% csrf_token %}               
+                    <div class="row">
+                        <div class="col-md-2 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label" for="id_nombre">Nombre</label>
+                                <input id="id_nombre" name="nombre" type="text" value="{{nombre}}"  class="input form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-5 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label" for="id_apellidopaterno">Apellido. Paterno</label>
+                                <input id="id_apellidopaterno" name="apellidoP" type="text" value="{{apellidoP}}"  class="input form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label" for="id_apellidomaterno">Apellido. Materno.</label>
+                                <input id="id_apellidomaterno" name="apellidoM" type="text" value="{{apellidoM}}"  class="input form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label" for="date">Fecha de Registro.</label>
+                                <input id="id_fecharegistro" name="fecharegistro" type="text" value="{{cargo}}" class="input form-control"> 
+                            </div>
+                        </div>
+                        <div class="col-md-3  col-xs-2">
+                            <div class="form-group">
+                                <label class="control-label" for="email">Username</label>
+                                <input id="id_cargo" name="username" type="text" value="" class="form-control"> 
+                            </div>
+                        </div>
+                        <div class="col-md-3  col-xs-2">
+                            <div class="form-group">
+                                <label class="control-label" for="email">Password</label>
+                                <input id="id_cargo" name="password" type="text" value="" class="form-control"> 
+                            </div>
+                        </div>
+                        <div class="col-md-2  col-xs-2">
+                            <div class="form-group">
+                                <label class="control-label" for="email">Tipo</label>
+                                <select name="tipo" class="form-control" id="sel1">                                    
+                                    <option value="1" selected >Usuario</option>
+                                    <option value="2">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2  col-xs-2">
+                            <div class="form-group">
+                                <label class="control-label" for="email">Estado</label>  
+                                <select name="estado" class="form-control" id="sel1">
+                                    <option value="1" selected>Activo</option>
+                                    <option value="2">Inactivo</option>                                  
+                                </select>
+                            </div>
+                        </div>
+                                                             
+                    </div>                   
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-info btn-lg fa fa-floppy-o"> Registrar</button>
+                            <!--<input type="submit" name="registrar_viaticos" id="Registrar" value="Registrar" class="btn btn-info rounded-0 py-2">
+                            <a class="btn btn-primary btn-lg  fa fa-pencil" data-original-title="Edit" data-placement="top" href=""></a>   --> 
+                            <a class="btn btn-danger btn-lg fa fa-undo" data-original-title="Edit" data-placement="top" href="{%url "viaticos:detail" %}"> Cancelar</a> 
+                        </div> 
+                        
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 
+<script>
+    $('#enviar').click(function(e){ 
+        var id = $("#user_id").val();
+        $.ajax({
+            data: {'id': id},
+            url: '/empleado/busquedaUsuario/',
+            type: 'get',
+            success : function(data) {
+                var object=JSON.parse(data);
+                console.log(data)
+                if (object.error==200){
+                    var nombre=object.nombre.toUpperCase();
+                    var apellidop=object.paterno.toUpperCase();
+                    var apellidom=object.materno.toUpperCase();                    
+                    var fecha=object.fecha                   
+                 
+                    $("#id_nombre").val(nombre);
+                    $("#id_apellidopaterno").val(apellidop);
+                    $("#id_apellidomaterno").val(apellidom);
+                    $("#id_fecharegistro").val(fecha);
+                } 
+                else 
+                    if (object.error==403){
+                        var error=document.getElementById("errorajax");
+                        var errorspan=document.getElementById("messageajax");
+                        error.style.display = "block";
+                        if (error.style.display = "block"){
+                            errorspan.innerHTML="EL EMPLEADO NO ESTA REGISTRADO POR FAVOR INTRUDUSCA UN C.I. VALIDO";
+                        }
+                        
+                        setTimeout(function() {
+                            $("#error").fadeOut(1000);
+                            error.style.display = "none";
+                        },5000);
+                        $("#id_nombre").val("");
+                        $("#id_apellidopaterno").val("");
+                        $("#id_apellidomaterno").val("");
+                        $("#id_fecharegistro").val("");                        
+                    }  
+                    else    
+                        if (object.error==500){
+                            var error=document.getElementById("errorajax");
+                            var errorspan=document.getElementById("messageajax");
+                            error.style.display = "block";
+                            if (error.style.display = "block"){
+                                errorspan.innerHTML="INTRODUSCA UN C.I.";
+                            }
+                            
+                            setTimeout(function() {
+                                $("#error").fadeOut(1000);
+                                error.style.display = "none";
+                            },5000);
+                            $("#id_nombre").val("");
+                            $("#id_apellidopaterno").val("");
+                            $("#id_apellidomaterno").val("");
+                            $("#id_fecharegistro").val("");       
+                        }         
+            },
+            error : function(data) {
+                console.log(data);                 
+            }
+        });
+        e.preventDefault();
+    });
+</script>
+{% endblock content %}

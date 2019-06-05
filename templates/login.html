@@ -1,0 +1,53 @@
+{% extends "base/base.html" %}
+{% block body_class %}login{% endblock body_class %}
+
+{% block body %}
+  <div>
+    <div class="login_wrapper">
+        <div class="animate form login_form">
+          <div class="login_content">
+            <form class="form-horizontal" method="POST">
+                {% csrf_token %}
+                <h1>Inície Sesión</h1>
+                {% if form.errors %}
+                    <p>El Usuario no esta disponible contactese con el Administrador</p>
+                {% endif %}
+                {% if form.password.errors %}
+                    <p>El password esta incorrecto</p>
+                {% endif %}
+                <div class="form-group">
+                    <label class="control-label col-xs-3">Usuario:</label>
+                    <div class="col-xs-9">
+                        <input type="text" class="form-control" name="username"  placeholder="Usuario">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-3">Contraseña:</label>
+                    <div class="col-xs-9">
+                        <input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password">
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <div class="col-xs-offset-3 col-xs-9">
+                        <input type="submit" class="btn btn-primary" value="Ingresar">
+                    </div>
+                </div>
+            </form>  
+          </div>
+          <div class="separator">
+            <div class="form-group">
+                <div class="col-xs-offset-3 col-xs-9">
+                    <a href="">Olvide mi contraseña</a> 
+                </div>
+            </div>
+            <br />
+            <div>
+              <p>©2016 All Rights Reserved. Json. Gobierno Autonomo Departamental de Potosi</p>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+{% endblock body %}
+

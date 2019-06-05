@@ -1,0 +1,306 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% block title %} Centralizador {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="right_col" role="main">
+    <div class="row">
+        <!-- form input mask -->
+        <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+            <h2>Centralizador de viaticos <small>verifique los costos anuales de cada secretaria</small></h2>
+            <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="POST" action="{% url "viaticos:centralizador" %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-2   col-sm-11 col-xs-11">
+                                            <label class="control-label col-md-8 col-sm-4 col-xs-12">Busqueda</label>
+                                            <div class="form-group ">
+                                                <select name="todos" class="form-control" >
+                                                    {% if todos %}
+                                                        <option >...</option>
+                                                        <option value="todos" selected>Todos</option>
+                                                    {% else %}
+                                                        <option selected>...</option>
+                                                        <option value="todos">Todos</option>
+                                                    {% endif %}
+                                                    
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8  col-sm-11 col-xs-11">
+                                            <label class="control-label col-md-4 col-sm-4 col-xs-12">AREA</label>
+                                            <div class="form-group ">
+                                                <select name="area" class="form-control" >
+                                                    <option selected>...</option>
+                                                    {% for secr in secretaria%}
+                                                        <option value="{{ secr.id }}">{{secr.descripcion.descripcion}}</option>
+                                                    {% endfor%}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: center">
+                                            <input type="submit" class="btn btn-primary btn-lg" style="margin-top: 18px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                    </div>     
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="dropdown">
+        {% if perms.viaticos.Reportes_Centralizar %}
+            {% if todos %}
+                {% if contacts%}
+                    <a  style="margin-right: 15px;" href="{% url "viaticos:centralizadorpdf" %}" class="btn btn-primary btn-top btn-sm" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true" ></i> PDF</a>
+                    
+                    <a  style="margin-right: 15px;" href="{% url "viaticos:centralizadorexcel" %}" class="btn btn-primary btn-top btn-sm"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Excel</a>
+                {%endif%}
+            {% endif %}
+        {% endif%}
+    </div>
+    <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12" id="mostrarerrordjango" {% if error %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+        <div class="alert" style="background-color: rgba(255, 255, 255, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                ×</button>                      
+            <p style="color: black;">{{error}}</p>
+        </div>
+    </div>
+    
+    {% if contacts %}
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">            
+                <div class="accordion" id="accordion1" role="tablist" aria-multiselectable="true">
+                    {% for jj in contacts %}
+                        <div class="panel" style="background-color: #e8e8e8;">
+                            <a class="panel-heading" role="tab" id="headingOne1" data-toggle="collapse" data-parent="#accordion1" href="#numero{{jj.n}}" aria-expanded="true" aria-controls="collapseOne" style="background:#c3c9ce;">
+                            <h4 class="panel-title">
+                                    INF. CONT. = {{jj.infcont}}
+                                    Nº DE PERSONAS = {{jj.NumeroPersonas}}
+                                    FECHA = {{jj.Fecha}}
+                            </h4>
+                            </a>
+                            <div id="numero{{jj.n}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">                               
+                                    <table class="table table-striped jambo_table bulk_action">
+                                        <thead>
+                                            <tr class="headings">
+                                    
+                                                <th>SECRETARIA</th>
+                                                <th>PASAJES</th>
+                                                <th>PEAJE</th>
+                                                <th>IMPORTE</th>
+                                                <th>RC-IVA</th>
+                                                <th>LIQ. PAGABLE</th>
+                                                <th>TOTAL A CANCELAR</th>
+                                            
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for i in jj.Secretarias %}
+                                                <tr class="odd pointer">
+                                                    <td>{{i.secreatria}}</td>
+                                                    <td>{{i.pasaje}}</td>
+                                                    <td>{{i.peaje}}</td>
+                                                    <td>{{i.importe}}</td>
+                                                    <td>{{i.rciva}}</td>
+                                                    <td>{{i.liqpagable}}</td>
+                                                    <td>{{i.totalcancelar}}</td>
+                                                </tr>
+                                            {% endfor%}
+                                        </tbody>
+                                        {% for m in jj.Total %}
+                                            <tfoot style=" background: rgba(52, 73, 94, 0.94);color: #ECF0F1;">
+                                                <tr>
+                                                    <td>Total</td>
+                                                    <td>{{m.totalpasaje}}</td>
+                                                    <td>{{m.totalpeaje}}</td>
+                                                    <td>{{m.totalimporte}}</td>
+                                                    <td>{{m.totalrciva}}</td>
+                                                    <td>{{m.totalliqpagable}}</td>
+                                                    <td>{{m.totalliqtotalcancelar}}</td>
+                                                </tr>
+                                            </tfoot>              
+                                        {% endfor%}    
+                                    </table>
+                                </div>
+                            </div>
+                        </div>                     
+                    {% endfor %}
+                </div>
+            </div>                     
+        </div>
+        <table class="table table-striped jambo_table bulk_action">
+            <thead>
+                <tr class="headings">
+                    <th>TOTALES</th>
+                    <th>CANTIDAD VIATICOS</th>
+                    <th>PASAJES</th>
+                    <th>PEAJE</th>
+                    <th>IMPORTE</th>
+                    <th>RC-IVA</th>
+                    <th>LIQ. PAGABLE</th>
+                    <th>TOTAL A CANCELAR</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in jj.Secretarias %}
+                    <tr class="odd pointer">
+                        <td>{{i.secreatria}}</td>
+                        <td>{{i.pasaje}}</td>
+                        <td>{{i.peaje}}</td>
+                        <td>{{i.importe}}</td>
+                        <td>{{i.rciva}}</td>
+                        <td>{{i.liqpagable}}</td>
+                        <td>{{i.totalcancelar}}</td>
+                    </tr>
+                {% endfor%}
+            </tbody>
+            <tfoot style=" background: rgba(52, 73, 94, 0.94);color: #ECF0F1;">
+                <tr>
+                    <td>Total</td>
+                    <td>{{cantidadviaticos}}</td>
+                    <td>{{Totalsumatoriapasaje}}</td>
+                    <td>{{Totalsumatoriapeaje}}</td>
+                    <td>{{Totalsumatoriaimporte}}</td>
+                    <td>{{Totalsumatoriarciva}}</td>
+                    <td>{{Totalsumatorialiqpagable}}</td>
+                    <td>{{Totalsumatoriatotalcancelar}}</td>
+                </tr>
+            </tfoot>              
+             
+        </table>
+        <div style="text-align: center">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        {% if contacts.has_previous %}
+                            <a href="?todos=todos&area=...&ue=...&prog=...&act=...&act=...&page={{ contacts.previous_page_number }}" class="page-link"><< Atras</a>
+                        {% endif %}
+                    </li>
+                    <li class="page-item">
+                        <span class="current">
+                            Pagina {{ contacts.number }} de {{ contacts.paginator.num_pages }}
+                        </span>
+                    </li>
+                    <li class="page-item">
+                        {% if contacts.has_next %}
+                            <a href="?todos=todos&area=...&ue=...&prog=...&act=...&act=...&page={{ contacts.next_page_number }}" class="page-link">Adelante >></a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+    {% endif%}
+    {% if contactslen == 0 %}
+        <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12" {%if not contacts %} style="display:block" {%else%} style="display:none" {%endif%}>
+            <div class="alert" style="background-color: rgba(255, 199, 199, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                    ×</button>
+                <p style="color: black;">No existe ninguna consulta</p>
+            </div>
+        </div>
+    {% endif%}
+    {% if soloporsecretaria %} 
+        {% if soloporsecretaria == 1 %}
+            {%if presolo%}                
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <a  href="{% url "viaticos:centralizadorsecretarias" secretaria_id_url %}" class="btn btn-primary btn-sm"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Excel</a>
+                                <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="table-responsive">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                        <tr class="headings">
+                                            <th class="column-title">Nº</th>                                            
+                                            <th class="column-title">FECHA</th>
+                                            <th class="column-title">INF. CONT.</th>
+                                           
+                                            <th class="column-title">Nº PERSONAS</th>
+                                            <th class="column-title">PASAJES</th>
+                                            <th class="column-title">PEAJE</th>
+                                            <th class="column-title">IMPORTE</th>
+                                            <th class="column-title">RC-IVA</th>
+                                            <th class="column-title">LIQ. PAGABLE</th>
+                                            <th class="column-title">TOTAL A CANCELAR</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for jj in presolo %}    
+                                            <tr class="even pointer">
+                                                <td>{{jj.n}}</td>  
+                                                
+                                                <td>{{jj.fechasalida}}</td>
+                                                <td>{{jj.infcont}}</td>
+                                                
+                                                <td>{{jj.NumeroPersonas}}</td>
+                                                <td>{{jj.pasaje}}</td>
+                                                <td>{{jj.peaje}}</td>
+                                                <td>{{jj.importe}}</td>
+                                                <td>{{jj.rciva}}</td>
+                                                <td>{{jj.liqpagable}}</td>
+                                                <td>{{jj.totalcancelar}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot style="background: rgba(52, 73, 94, 0.94);color: #ECF0F1;">
+                                        <tr>
+                                            <td colspan="3">Total</td>
+                                            <td>{{totol_personas}}</td>  
+                                            <td >{{Totalsumatoriapasaje}}</td>
+                                            <td >{{Totalsumatoriapeaje}}</td>
+                                            <td >{{Totalsumatoriaimporte}}</td>
+                                            <td >{{Totalsumatoriarciva}}</td>
+                                            <td >{{Totalsumatorialiqpagable}}</td>
+                                            <td >{{Totalsumatoriatotalcancelar}}</td>
+                                       
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {%else%}
+                <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                    <div class="alert" style="background-color: rgba(255, 255, 255, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                            ×</button>
+                        <span class="glyphicon glyphicon-remove"></span> <strong style="color: black;">Error en la consulta</strong>
+                        <hr class="message-inner-separator">
+                        <p style="color: black;">NO HAY NINGUN VIATICO REGISTRADO A ESA SECRETARIA</p>
+                    </div>
+                </div>
+            {% endif%}
+        {% endif %}
+    {% endif %}    
+</div>
+{% endblock content %}

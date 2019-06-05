@@ -1,0 +1,29 @@
+<div class="modal-dialog modal-sm">
+    <div class="modal-content" style="width: 165%;">        
+        <form role="form" action="{% url 'viaticos:borrarviatico' object.slug %}" method="post">  
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>                
+            </div>                   
+            <div class="modal-body">
+                {% csrf_token %}
+                <div style="text-align: center">
+                        <h3>¿Esta seguro que desea eliminar este viatico...? </h3>
+                </div>  
+                <div style="text-align: center">
+                    <h2>Nombre Completo= {{object.solicitante.nombre }} 
+                        {{object.solicitante.apaterno }} {{object.solicitante.amaterno }}</h2>
+                    <h2>Lugar = {{object.lugar}}</h2>
+                    <h2>Numero Control = {{ object.ncontrol }}</h2>
+                    <input type="hidden" name="slug" value={{ object.slug }}>                   
+                </div><br>                                
+                <div style="text-align: center">
+                    <button class="btn btn-danger" type="submit">Sí, eliminar</button>
+                    <button type="button" class="btn btn-default" onclick="return cerrar_modal()">
+                            Cancelar
+                    </button>
+                </div>
+                
+            </div>            
+        </form>
+    </div>
+</div>

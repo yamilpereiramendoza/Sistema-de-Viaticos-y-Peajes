@@ -1,0 +1,164 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% load tag_library %}
+{% block title %} Registro de Montos {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<style>
+  .palabras{
+    color: darkgray;
+  }
+</style>
+<div class="right_col" role="main">
+  {% if messages %}
+    {% for message in messages %}
+        <input type = "hidden" id = "myVar" name = "variable" value = "{{message}}">
+    {% endfor %}
+  {% endif %}
+  <div class="row">        
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <div>
+              <a onclick="return abrir_modal('{% url 'administrador:crear_tipo_monto' %}')" class="btn btn-primary">
+                  Crear Nuevo Monto
+            </a>          
+          </div>          
+          <h2>Lista de  Montos</h2>          
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <table class="table table-striped jambo_table bulk_action" >
+            <thead>
+              <tr class="headings">   
+                <th class="column-title">NIVELES JERARQUICOS</th>
+                <th class="column-title">CATEGORIA</th>
+                <th class="column-title">TIPO DE VIAJE</th>
+                <th>CANTIDAD</th>
+                <th class="column-title">DESTINO </th>
+                <th class="column-title">VERIFICACION</th>
+                <th class="column-title">ACCIONES </th>          
+                </th>          
+              </tr>
+            </thead>
+      
+            <tbody>
+              {% for m in mon%}
+                <tr class="even pointer">
+                  <td class=" ">{{m.Tipo_viatico.Tipo_Viajante}}</td>
+                  <td>
+                    {% if m.Tipo_viatico.id == 1 %}
+                      {% if m.valido == 1 %}
+                        Primera
+                      {%else%}
+                        <del class="course-price-del s-mr-05 palabras">Primera</del>
+                      {%endif%}
+                      
+                    {%else%}
+                        {% if m.valido == 1 %}
+                        Tercera
+                        {%else%}
+                          <del class="course-price-del s-mr-05 palabras">Tercera</del>
+                        {%endif%}
+                    {%endif%}
+                  </td>
+                  <td class=" ">
+                    {% if m.valido == 1 %}
+                      {{m.Nombre}}
+                    {%else%}
+                      <del class="course-price-del s-mr-05 palabras">{{m.Nombre}}</del>
+                    {%endif%}
+                  </td> 
+                  <td>
+                    {% if m.valido == 1 %}    
+                      {{m.Cantidad}}    
+                      {% if m.identificacion == 1 %}
+                            Bs.
+                      {%else%}
+                          $
+                      {%endif%}          
+                    {%else%}
+                        <del class="course-price-del s-mr-05 palabras">{{m.Cantidad}} </del>  
+                        {% if m.identificacion == 1 %}
+                            Bs.
+                        {%else%}
+                            $
+                        {%endif%}
+                                                      
+                    {% endif%}
+                    
+                  </td>           
+                  <td class=" ">
+                    {% if m.identificacion == 1 %}
+                      {% if m.valido == 1 %}    
+                        Dentro del pais              
+                      {%else%}
+                        <del class="course-price-del s-mr-05 palabras">Dentro del pais </del>                                  
+                      {% endif%}
+                    
+                    {%else%}
+                      {% if m.valido == 1 %}    
+                        Fuerda del pais              
+                      {%else%}
+                        <del class="course-price-del s-mr-05 palabras">Fuerda del pais </del>                                  
+                      {% endif%}              
+                    {% endif%}   
+                    
+                  </td>
+                  <td class=" ">
+                    
+                    {% if m.valido == 1 %}    
+                      <p><span class="label label-success">Valido</span></p>          
+                      
+                    {%else%}
+                      <p><span class="label label-warning"><del class="course-price-del s-mr-05">No Valido </del></span></p>                                  
+                    {% endif%}
+                  </td>
+                  <td>                        
+                        {% if user.is_authenticated %}                                           
+                          {% if user.is_superuser %}  
+                            <a onclick="return abrir_modal('{% url 'administrador:eliminar_monto' m.id %}')"  class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Eliminar </a>
+                            {% if m.valido == 1 %}   
+                                                                                                                                                                                                                                                                                                                     
+                              <a onclick="return abrir_modal('{% url 'administrador:update_monto' m.id %}')" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Editar</a>
+                              <a href="{% url 'administrador:invalidar_monto' m.id %}" class="btn btn-warning btn-xs"><i class="fa fa-trash-o"></i> Invalidar </a>
+                            {%else%}                                                          
+                              <a href="{% url 'administrador:validar_monto' m.id %}" class="btn btn-success btn-xs"><i class="fa fa-trash-o"></i> Validar </a>
+                            {% endif%}
+                          
+                        {% endif%}
+                      {% endif%}                                                 
+                                      
+                  </td>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div> 
+    </div>    
+  </div>
+  <div id="popup" class="modal fade" role="dialog"></div>
+</div>
+<script>
+function abrir_modal(url)
+{
+        $('#popup').load(url, function()
+        {
+                $(this).modal('show');
+        });
+        return false;
+}
+
+function cerrar_modal()
+{
+        $('#popup').modal('hide');
+        return false;
+}
+
+</script>
+{% endblock content %}

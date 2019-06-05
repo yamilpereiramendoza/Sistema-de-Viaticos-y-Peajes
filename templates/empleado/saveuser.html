@@ -1,0 +1,129 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% block title %} Registro de Empleados {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="panel panel-primary">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <input type = "hidden" id = "myVar" name = "variable" value = "{{message}}">
+                        {% endfor %}
+                    {% endif%}
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Editar de Empleado</h3>
+                    </div>
+                    
+                    <form action="{% url "empleados:saveuser" %}" method="POST" name="myform">
+                        {% csrf_token %}
+                        <div class="panel-body">
+                            <div class="col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-4  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Nombre</label>
+                                                        <input type="text" name="nombre" id="id_nombre" required="" value="{{form.nombre}}" class="input form-control" maxlength="30">
+                                                       
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Apellido Paterno</label>
+                                                        <input type="text" name="apaterno" id="id_apaterno" value="{{form.apaterno}}" class="input form-control" maxlength="30">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Apellido Materno</label>
+                                                        <input type="text" name="amaterno" id="id_amaterno" value="{{form.amaterno}}" class="input form-control" maxlength="30">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Carnet de Identidad</label>
+                                                        <input type="text" name="ci" required="" value="{{form.ci}}" class="input form-control" id="id_ci">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2  col-xs-2">
+                                                    <div class="form-group">
+                                                        
+                                                        <label class="control-label" for="email">U.E.</label>
+                                                        <select name="ue" class="monto input form-control" id="id_ue">
+                                                                <option value="{{form.ue}}" selected="">...{{form.ue}}...</option>
+                                                                <option value="1">0</option>
+                                                                <option value="2">1</option>
+                                                                <option value="3">2</option>
+                                                                <option value="4">3</option>
+                                                                <option value="5">4</option>
+                                                                <option value="6">5</option>
+                                                                <option value="7">6</option>
+                                                                <option value="8">7</option>
+                                                                <option value="9">8</option>
+                                                                <option value="10">9</option>
+                                                                <option value="11">10</option>
+                                                                <option value="12">11</option>
+                                                                <option value="13">12</option>
+                                                                <option value="14">13</option>
+                                                                <option value="15">14</option>
+                                                                <option value="16">15</option>
+                                                                <option value="17">16</option>
+                                                                <option value="18">17</option>
+                                                                <option value="19">18</option>
+                                                                <option value="20">19</option>
+                                                                <option value="21">20</option>
+                                                                <option value="22">21</option>
+                                                                <option value="23">22</option>
+                                                                <option value="24">23</option>
+                                                                <option value="25">24</option>
+                                                                <option value="26">25</option>
+                                                              
+                                                        </select>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Secretaria</label>
+                                                        <select name="secretaria" class="monto input form-control" id="id_ue">
+                                                            <option value="{{form.secretaria.id}}" selected="">...{{form.secretaria}}...</option>
+                                                        </select>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3  col-xs-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="email">Nº de Cuenta</label>
+                                                        <input type="text" name="bcontrol" value="{{form.bcontrol}}" class="input form-control" id="id_bcontrol">
+                                                       
+                                                    </div>
+                                                </div>
+                                            </div>
+                            
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>  
+                        
+                        <div class="panel-body">
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-info btn-lg fa fa-floppy-o"> Guardar</button>
+
+                                <a class="btn btn-danger btn-lg fa fa-undo" data-original-title="Edit" data-placement="top" href="{%url "empleados:update_empleado" %}"> Cancelar</a> 
+                            </div> 
+                        </div>
+                    </form>        
+                </div>
+            </div>
+        </div>     
+    </div> 
+</div> 
+{% endblock content %}

@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% block title %} Centralizador {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Lista de Empleados</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                   
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">      
+                <div class="table-responsive">                                                
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                            <tr class="headings">
+                                <th>N°</th>
+                                <th>NOMBRES Y APELLIDOS</th>                        
+                                <th>C.I.</th>
+                                <th>SECRETARIA</th>
+                                
+                                <th>FECHA DE REGISTRO</th>
+                                <th>Acciones</th>                     
+                            </tr>
+                        
+                        </thead>
+                        <tbody>
+                            {% for usu in usuario %}
+                                <tr class="even pointer">
+                                    <td>{{usu.id}}</td>
+                                    <td>{{usu.nombre|upper}} {{usu.apaterno|upper}}  {{usu.amaterno|upper}}</td>
+                                    <td>{{usu.ci}}</td>
+                                    <td>{{usu.secretaria}} </td>
+                                    
+                                    <td>
+                                        {% if usu.fechaReg != None %}
+                                            {{usu.fechaReg|date:'d / m / Y'}}
+                                        {%else%}
+                                            SIN FECHA DE REGISTRO
+                                        {%endif%}
+                                    </td>
+                                    <td>
+                                        <a href="" class="btn btn-danger btn-xs"><i class="fa fa-thumbs-down"></i> Inabilitar</a>
+                                    </td>                   
+                                </tr>
+                            {% endfor %}                      
+                        </tbody>
+                    </table>
+                    <div style="text-align: center">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item">
+                                    {% if usuario.has_previous %}
+                                    <a href="?page={{ usuario.previous_page_number }}"><< Atras</a>
+                                    {% endif %}
+                                </li>
+                                <li class="page-item">
+                                    <span class="current">
+                                        Pagina {{ usuario.number }} de {{ usuario.paginator.num_pages }}
+                                    </span>
+                                </li>
+                                <li class="page-item">
+                                    {% if usuario.has_next %}
+                                    <a href="?page={{ usuario.next_page_number }}">Adelante >></a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

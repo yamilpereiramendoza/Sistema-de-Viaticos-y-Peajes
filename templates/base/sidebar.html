@@ -1,0 +1,110 @@
+<div class="left_col scroll-view">
+  <div class="navbar nav_title" style="border: 0; text-align: center">
+    <a href="" class="site_title"><i class="fa fa-spinner"></i></a>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <!-- menu profile quick info -->
+  <div class="profile clearfix">
+    <div class="profile_pic" style="text-align: center;">
+      <img src="/static/images/img.jpg" alt="..." class="img-circle profile_img">
+    </div>
+    
+  </div>
+  <br />
+  <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <div class="menu_section">
+
+      <ul class="nav side-menu">
+          <li><a><i class="fa fa-home"></i>Inicio</a></li>
+          <!--
+          <li><a><i class="fa fa-edit"></i>Registro  Empleados<span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="{% url "empleados:create_empleado" %}">Registrar Empleados</a></li>
+              <li><a href="{% url "empleados:list_empleados" %}">Listar Empleados</a></li>
+            </ul>
+          </li>
+          
+          {% if user.is_authenticated %}                     
+              
+            {% if user.is_superuser %}
+            {% endif %}                     
+            {% endif %}     
+              <li><a><i class="fa fa-edit"></i>Registro  Usuarios<span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                  <li><a href="{% url "empleados:create" %}">Registrar Usuarios</a></li>
+                  <li><a href="{% url "empleados:list_user" %}">Listar Usuarios</a></li>
+                </ul>
+              </li>-->
+        {%if perms.empleado.add_secretaria %}             
+          <li><a><i class="fa fa-sort-amount-asc"></i>Modulo de Secretarias<span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">                                    
+              <li><a href="{% url "administrador:list_secre" %}">Secretarias</a></li>                                                   
+            </ul>
+          </li>
+        {%endif%}
+        {%if perms.viaticos.add_monto %}
+          <li><a><i class="fa fa-money"></i>Modulo de Montos<span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">    
+              <li><a href="{% url "administrador:crear_tipo" %}">Tipo de Viajante</a></li>                                               
+              <li><a href="{% url "administrador:list_monto" %}">Montos</a></li>                                   
+            </ul>
+          </li>
+        {%endif%}           
+        {%if perms.viaticos.add_viaticodiario %}
+          <li><a><i class="fa fa-bus"></i> Gestion de Viaticos <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="{% url "viaticos:SolicitudCreate" %}">Registrar Viatico y Peaje</a></li>
+              <li><a href="{% url "viaticos:encomision" %}">Ver Empleados en Comision</a></li>
+              <li><a href="{% url "viaticos:detail" %}">Ver Lista de Viaticos y peajes</a></li>              
+            </ul>
+          </li>
+        {%endif%}
+        {% if perms.viaticos.Busquedas %}
+          <li><a><i class="fa fa-calendar-o"></i> Busquedas<span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              {% if perms.viaticos.Busquedas_viaticos %}
+                <li><a href="{% url "viaticos:buscar_registro" %}">Ver historial de Viáticos y Peajes</a></li>            
+              {%endif%}
+              {% if perms.viaticos.Busquedas_servidor %}
+                <li><a href="{% url "viaticos:buscarr_empleado" %}">Ver historial de cada servidor publico</a></li>
+              {%endif%}          
+            </ul>
+          </li>
+        {%endif%}
+        {% if perms.viaticos.Reportes%}
+          <li><a><i class="fa fa-bar-chart-o"></i> Reportes<span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">  
+              {% if perms.viaticos.Realizar_reportes_viaticos %}          
+                <li><a href="{% url "viaticos:reportes_mesClases" %}">Rep. Viáticos y Peajes</a></li>
+              {%endif%}             
+              {% if perms.viaticos.Realizar_reportes_servidor %}
+                <li><a href="{% url "viaticos:reporte_empClases" %}">Rep. por cada servidor publico</a></li>
+              {%endif%}            
+            </ul>
+          </li>
+        {%endif%}
+        {% if perms.viaticos.Centralizar%}
+          <li><a><i class="fa fa-pie-chart"></i> Centralizador<span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="{% url "viaticos:centralizador" %}">Ver costo por secretaria</a></li>            
+            
+              <li><a href="{% url "viaticos:buscar_saldo" %}">Ver Saldo por secretaria</a></li>
+            </ul>
+          </li>
+        {%endif%}
+      </ul>
+    </div>
+
+  </div>
+  <!-- /sidebar menu -->
+
+  <!-- /menu footer buttons -->
+  <div class="sidebar-footer hidden-small">
+    <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+      <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+    </a>
+  </div>
+  <!-- /menu footer buttons -->
+</div>

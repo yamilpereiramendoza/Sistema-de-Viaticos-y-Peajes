@@ -1,0 +1,160 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% load tag_library %}
+{% block title %} Centralizador {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="row">
+        <!-- form input mask -->
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                <h2>Reporte de Servidor Publico</h2>
+                <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form method="POST" action="{% url "viaticos:reporte_empClases" %}">
+                        {% csrf_token %}    
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">                                                       
+                                        <div class="col-md-2 col-md-offset-2  col-sm-12 col-xs-11">
+                                            <label class="control-label">C.I.</label>
+                                            <div class="form-group ">
+                                                <input type="text" class="form-control" value="{{user_id}}" name="user_id" id="user_id" placeholder="Introdusca un C.I...">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2  col-sm-12 col-xs-11">
+                                                <label class="control-label">Gestion</label>
+                                                <div class="form-group ">
+                                                    <select name="anios" class="form-control" >
+                                                        <option>...</option>
+                                                        {% for a in ano %}
+                                                            {% if a.ano|to_int == anoss|to_int %}                                            
+                                                                <option value="{{a.ano}}" selected >{{a.ano}}</option>
+                                                            {%else%}
+                                                                <option value="{{a.ano}}">{{a.ano}}</option>
+                                                            {%endif%}                                                                                                                                                                                                       
+                                                        {% endfor%}                                         
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        <div class="col-md-2 col-sm-12 col-xs-11">
+                                            <label class="control-label">Mes</label>
+                                            <div class="form-group ">
+                                                <select name="mes" class="form-control" >
+                                                    <option>...</option>
+                                                    {% for a in meses%}
+                                                        {% if mes == a %}                                                  
+                                                            <option value="{{a}}" selected>{{a}}</option>
+                                                        {%else%}
+                                                            <option value="{{a}}">{{a}}</option> 
+                                                        {%endif%}                                           
+                                                    {% endfor%}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6">
+                                            <div style="text-align: center">
+                                                <input type="submit" class="btn btn-primary btn-lg" style="margin-top: 18px;">
+                                            </div>
+                                            
+                                        </div>
+                                                                        
+                                    </div>
+                                </div>  
+                            </div>
+                        </div>     
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{anoss_url}}<br>
+    {{user_id_url}}
+    <div class="dropdown">
+        {% if not error %}
+            {% if user_id and anoss and uno%}
+                <a  style="margin-right: 15px;" href="{% url "viaticos:ReporteViaticosEmppdf" user_id anoss %}" class="btn btn-primary btn-top btn-sm" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true" ></i> PDF</a>
+            {%endif%}
+            {% if mes and anoss and user_id and dos%}
+                <a  style="margin-right: 15px;" href="{% url "viaticos:ReporteViaticosEmpTrespdf" mes anoss user_id %}" class="btn btn-primary btn-top btn-sm" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true" ></i> PDF</a>
+            {% endif%}
+            
+        {% endif%}
+    </div>
+    <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12" id="mostrarerrordjango" {% if error %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+        <div class="alert" style="background-color: rgba(255, 255, 255, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                ×</button>
+            <span class="glyphicon glyphicon-remove"></span> <strong style="color: black;">Error en la consulta</strong>
+            <hr class="message-inner-separator">
+            <p style="color: black;">{{error|linebreaksbr}}</p>
+        </div>
+    </div>
+    {% if viatico %}
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">                                                      
+                <table class="table table-striped jambo_table bulk_action">
+                    <thead>
+                        <tr class="headings">
+                            <th class="column-title">N°</th>
+                            <th class="column-title">NOMBRES Y APELLIDOS</th>
+                            <th class="column-title">C.I.</th>
+                            <th class="column-title">PASAJES</th>
+                            <th class="column-title">PEAJES</th>                                    
+                            <th class="column-title">IMPORTES</th>
+                            <th class="column-title">RC-IVA</th>
+                            <th class="column-title">LIQ. PAGABLE</th>
+                            <th class="column-title">TOTAL A CANCELAR</th>
+                            <th class="column-title">U.E.</th>
+                            <th class="column-title">PROG</th>
+                            <th class="column-title">PROY</th> 
+                            <th class="column-title">ACT</th>
+                            <th>N° CUENTA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for viaticos in viatico %}
+                            <tr>
+                                <td>{{viaticos.id}}</td>
+                                <td style="font-size: 11px;">                                                
+                                    {{viaticos.NombreCompleto}}                    
+                                </td>
+                                <td>{{viaticos.ci}}</td>     
+                                <td>{{viaticos.pasaje}}</td>
+                                
+                                <td>{{viaticos.peaje}}</td>
+                                <td>{{viaticos.importe}}</td>
+                                <td>{{viaticos.rciva}}</td>
+                                
+                                <td>{{viaticos.liqpagable}}</td>
+                                <td>{{viaticos.liqtotalcancelar}}</td>
+                                <td>{{viaticos.ue}}</td>
+                                
+                                <td>{{viaticos.prog}}</td>
+                                
+                                
+                                    {% if viaticos.proy == None%}
+                                        <td></td> 
+                                    {%else%}
+                                        <td>{{viaticos.proy}}</td> 
+                                    {%endif%}
+                                <td>{{viaticos.act}}</td>
+                                <td>{{viaticos.numero}}</td>
+                            </tr>
+                        {% endfor %}                    
+                    </tbody>
+                </table>                                              
+            </div>        
+        </div>
+    {% endif%}
+</div>
+
+{% endblock content %}

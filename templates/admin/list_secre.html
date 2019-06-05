@@ -1,0 +1,105 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% load tag_library %}
+{% block title %} Crear Secretarias {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="right_col" role="main">
+    {% if messages %}
+        {% for message in messages %}
+            <input type = "hidden" id = "myVar" name = "variable" value = "{{message}}">
+        {% endfor %}
+    {% endif %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10">
+                <a onclick="return abrir_modal('{% url 'administrador:crear_secretarias_modal' %}')" class="btn btn-primary">
+                        Crear Secretarias
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                    <h2>Lista de Secretarias</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    
+                    <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">                                        
+                        <table class="table table-striped jambo_table bulk_action">
+                            <thead>
+                                <tr class="headings">
+                    
+                                    <th class="column-title">U.E.</th>
+                                    <th class="column-title">PROG.</th>
+                                    <th class="column-title">ACT.</th>
+                                    <th class="column-title">PROY.</th>
+                                    <th class="column-title">GESTION</th>                               
+                                    <th class="column-title">DESCRIPCION</th> 
+                                    <th class="column-title"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in secre %}
+                                    <tr>                                                                          
+                                        <td>{{s.ue}}</td>     
+                                        <td>{{s.prog}}</td>
+                                        
+                                        <td>{{s.act}}</td>
+                                        <td>{{s.proy}}</td>
+                                        <td>{{s.gestion}}</td>
+                                        
+                                        <td>{{s.descripcion.descripcion}}</td>
+                                        <td>                                                                                           
+                                            <a onclick="return abrir_modal('{% url 'administrador:delete_Secretarias' s.id %}')"  class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Eliminar </a>
+                                            
+                                            <a onclick="return abrir_modal('{% url 'administrador:update_secretarias_modal' s.id %}')" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Editar</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}                    
+                            </tbody>
+                        </table>                                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div id="popup" class="modal fade" role="dialog">
+    </div>   
+</div>
+<script type="text/javascript">
+
+    //Codigo para ahacer un modal
+
+    function abrir_modal(url)
+    {
+           $('#popup').load(url, function()
+           {
+                   $(this).modal('show');
+           });
+           return false;
+    }
+    
+    function cerrar_modal()
+    {
+           $('#popup').modal('hide');
+           return false;
+    }
+    
+
+    
+</script>
+{% endblock content %}

@@ -1,0 +1,388 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% load tag_library %}
+{% block title %} Centralizador {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+        
+    <div class="row">
+        <div class="">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2> Formulario de Comision de Servidores Publicos</h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings 1</a>
+                        </li>
+                        <li><a href="#">Settings 2</a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>              
+                <div class="x_content">
+                  <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                    <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                      <li role="presentation" {%if valor_pro|to_int == 2 %} class="active" {%else%} class="" {%endif%}>
+                        <a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">                                                                                      
+                            <span class="badge bg-blue pull-right">
+                            {%if viaticoss_proceso_tama|to_int > 0 %}
+                                {{viaticoss_proceso_tama}}
+                            {%else%}
+                                {{viaticoss_proceso_tama}}
+                            {%endif%}
+                            </span>
+                            <span style="margin-right: 10px;">Viajes en Proceso</span>                        
+                        </a>
+                      </li>
+                      <li role="presentation" {%if valor_pro|to_int == 1 %} class="active" {%else%} class="" {%endif%}>
+                            <a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">
+                                <span class="badge bg-orange pull-right">
+                                    {%if viaticoconcluido_tama|to_int > 0 %}
+                                        {{viaticoconcluido_tama}}
+                                    {%else%}
+                                        {{viaticoconcluido_tama}}
+                                    {%endif%}
+                                </span>
+                                <span style="margin-right: 10px;"> Viajes ya Concluidos</span>                                
+                            </a>
+                      </li>                      
+                      <li role="presentation" {%if valor_pro|to_int == 3 %} class="active" {%else%} class="" {%endif%}>
+                        <a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">
+                            <span class="badge bg-red pull-right">
+                                {%if viatico_no_realizados_tama|to_int > 0 %}
+                                    {{viatico_no_realizados_tama}}
+                                {%else%}
+                                    {{viatico_no_realizados_tama}}
+                                {%endif%}
+                            </span>
+                            <span style="margin-right: 10px;">Viajes aun no Realizados</span> 
+                              
+                        </a>
+                      </li>
+                    </ul>
+                    <div id="myTabContent" class="tab-content">
+                      <div role="tabpanel" {%if valor_pro|to_int == 1 %} class=" tab-pane fade active in" {%else%} class="tab-pane fade" {%endif%} id="tab_content1" aria-labelledby="home-tab">
+                        <p>
+                            {% if viaticoconcluido%}
+                                <div class="row">
+                                    <div class="container" >
+                                        <div class="col-md-6 col-md-offset-3">                                 
+                                            <form role="form" action="/viaticos/comision/" method="get">
+                                                <label for="validationCustom03">Seleccione un mes especifico:</label>
+                                                <div class="form-group">
+                                                    <div class="input-group">                                                                                                    
+                                                        <select class="form-control form-control-lg" name="dias_id" id="dias_ids">
+                                                            <option value="">Seleccione... </option>
+                                                            {%for d in dias%}
+                                                                {% if busqueda_no_realizados != None%}
+                                                                    {% if d == busqueda_no_realizados %}
+                                                                        <option value="{{d}}" selected>{{d}}</option>
+                                                                    {%else%}
+                                                                        <option value="{{d}}">{{d}}</option>    
+                                                                    {%endif%}
+                                                                {%else%}
+                                                                    <option value="{{d}}">{{d}}</option>
+                                                                {%endif%}
+                                                                
+                                                            {%endfor%}
+                                                        </select>
+                                                        <span class="input-group-btn">
+                                                            <button class="btn btn-success" type="submit">
+                                                            <i class="glyphicon glyphicon-search" aria-hidden="true"></i> Buscar
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </form> 
+                                            
+                                            {% if viaticoconcluido.number <= 1 %}
+                                                <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12" {% if error %} style="display: block;"{%else%} style="display: none;" {%endif%}>
+                                                    <div class="alert" style="background-color: rgba(255, 222, 222, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+                                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                            ×</button>                                                       
+                                                        <p style="color: black;"  class="error">NO HAY VIATICOS CON ESA FECHA</p>
+                                                    </div>
+                                                </div>
+                                            {% endif%}
+                                            <br>                                               
+                                        </div>
+                                    </div>                                            
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: -30px;">        
+                                        <div class="table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr class="headings">
+                                                    <th>Nombre y Apellido</th>
+                                                    <th>N. Control</th>
+                                                    <th>Ci</th>
+                                                    <th>Fecha Salida</th>
+                                                    <th>Fecha Llegada</th>
+                                                    <th>Monto Asignado</th>
+                                                    <th>Lugar</th>
+                                                    <th>Proceso de viaje</th>
+                                                    <th></th>
+                                                    </tr>
+                                                </thead>                                
+                                                <tbody id="tags1">
+                                                    {% for via in viaticoconcluido %}
+                                                        <tr class="even pointer">
+                                                            <td style="font-size: 12px;">{{via.nombre}} {{via.apellidoP}} {{via.apellidoM}}</td>
+                                                            <td>{{via.ncontrol}}</td>  
+                                                            <td>{{via.ci}}</td>
+                                                            <td>{{via.fecha_salida|date:'d-m-Y'}}</td>     
+                                                            <td>{{via.fecha_llegada|date:'d-m-Y'}}</td>     
+                                                            <td>{{via.monto}}</td>
+                                                            <td>{{via.lugar}}</td>                                                            
+                                                            <td class="project_progress">                                                                
+                                                                <div class="progress progress_sm">
+                                                                    <div class="progress-bars bg-green" data-transitiongoal="100" aria-valuenow="100" style="width:100%;"></div>
+                                                                </div>
+                                                                <small>100% Viaje Concluido</small>                                                                       
+                                                            </td>
+                                                            <td>                                                                
+                                                                <a onclick="return abrir_modal('{% url 'viaticos:detalle_viatico' via.slug %}')" class="btn btn-primary btn-xs"><i class="fa fa-eye"></i> Ver</a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>      
+                                    </div>
+                                </div>
+                        
+                                {% if viaticoconcluido_tama|to_int >= 15 %}
+                                    
+                                    <div style="text-align: center">
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-center">
+                                                <li class="page-item">
+                                                    {% if viaticoconcluido.has_previous %}
+                                
+                                                    <a href="?pages={{viaticoconcluido.previous_page_number }}&valor_proceso=1&dias_id={{busqueda_no_realizados}}"><< Atras</a>
+                                                    {% endif %}
+                                                </li>
+                                                <li class="page-item">
+                                                    <span class="current">
+                                                        Pagina {{ viaticoconcluido.number }} de {{ viaticoconcluido.paginator.num_pages }}
+                                                    </span>
+                                                </li>
+                                                <li class="page-item">
+                                                    {% if viaticoconcluido.has_next %}
+                                                    <a href="?pages={{ viaticoconcluido.next_page_number }}&valor_proceso=1&dias_id={{busqueda_no_realizados}}">Adelante >></a>
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                {%endif%}
+                            {%else%}
+                                <br>
+                                <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                                    <div class="alert" style="background-color: rgba(255, 222, 222, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            ×</button>                                        
+                                        <p style="color: black;"  class="error">NO HAY VIATICOS POR EL MONENTO CON ESE TIPO DE VIAJE</p>
+                                    </div>
+                                </div>
+                            {%endif%}
+                        </p>
+                      </div>
+                      <div role="tabpanel" {%if valor_pro|to_int == 2 %} class=" tab-pane fade active in" {%else%} class="tab-pane fade" {%endif%} id="tab_content2" aria-labelledby="profile-tab">
+                        <p>   
+                            {% if viaticoss_proceso%}
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">        
+                                        <div class="table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr class="headings">
+                                                    <th>Nombre y Apellido</th>
+                                                    <th>N. Control</th>
+                                                    <th>Ci</th>
+                                                    <th>Fecha Salida</th>
+                                                    <th>Fecha Llegada</th>
+                                                    <th>Monto Asignado</th>
+                                                    <th>Lugar</th>
+                                                    <th>Proceso de viaje</th>
+                                                    <th></th>
+                                                    </tr>
+                                                </thead>                                
+                                                <tbody>
+                                                    {% for via in viaticoss_proceso %}
+                                                        <tr class="even pointer">
+                                                            <td style="font-size: 12px;">{{via.nombre}} {{via.apellidoP}} {{via.apellidoM}}</td>
+                                                            <td>{{via.ncontrol}}</td>
+                                                            <td>{{via.ci}}</td>
+                                                            <td>{{via.fecha_salida|date:'d-m-Y'}}</td>     
+                                                            <td>{{via.fecha_llegada|date:'d-m-Y'}}</td>     
+                                                            <td>{{via.monto}}</td>
+                                                            <td>{{via.lugar}}</td>                                         
+                                                            <td class="project_progress">                                                               
+                                                                <div class="progress progress_sm">
+                                                                    <div class="progress-bars bg-green" data-transitiongoal="{{via.barra}}" aria-valuenow="{{via.barra}}" style="width:{{via.barra}}%;"></div>
+                                                                </div>
+                                                                <small>{{via.barra}}% Viaje Concluido</small>                                                                                                                                        
+                                                            </td>
+                                                            <td>
+                                                                    <a onclick="return abrir_modal('{% url 'viaticos:detalle_viatico' via.slug %}')" class="btn btn-primary btn-xs"><i class="fa fa-eye"></i> Ver</a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>      
+                                    </div>
+                                </div>
+                                {% if viaticoss_proceso_tama|to_int >= 15 %}
+                                    <div style="text-align: center">
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-center">
+                                                <li class="page-item">
+                                                    {% if viaticoss_proceso.has_previous %}
+                                
+                                                    <a href="?pag={{ viaticoss_proceso.previous_page_number}}&valor_proceso=2"><< Atras</a>
+                                                    {% endif %}
+                                                </li>
+                                                <li class="page-item">
+                                                    <span class="current">
+                                                        Pagina {{ viaticoss_proceso.number }} de {{ viaticoss_proceso.paginator.num_pages }}
+                                                    </span>
+                                                </li>
+                                                <li class="page-item">
+                                                    {% if viaticoss_proceso.has_next %}
+                                                    <a href="?pag={{ viaticoss_proceso.next_page_number }}&valor_proceso=2">Adelante >></a>
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                {%endif%}
+                            {%else%}
+                                <br>
+                                <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                                    <div class="alert" style="background-color: rgba(255, 222, 222, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            ×</button>                                        
+                                        <p style="color: black;"  class="error">NO HAY VIATICOS POR EL MONENTO CON ESE TIPO DE VIAJE</p>
+                                    </div>
+                                </div>
+                            {%endif%}
+                        </p>
+                      </div>
+                      <div role="tabpanel" {%if valor_pro|to_int == 3 %} class=" tab-pane fade active in" {%else%} class="tab-pane fade" {%endif%} id="tab_content3" aria-labelledby="profile-tab">
+                        <p>
+                            {% if viatico_no_realizados%}
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">        
+                                        <div class="table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr class="headings">
+                                                    <th>Nombre y Apellido</th>
+                                                    <th>N. Control</th>
+                                                    <th>Ci</th>
+                                                    <th>Fecha Salida</th>
+                                                    <th>Fecha Llegada</th>
+                                                    <th>Monto Asignado</th>
+                                                    <th>Lugar</th>
+                                                    <th>Proceso de viaje</th>
+                                                    <th></th>
+                                                    </tr>
+                                                </thead>                                
+                                                <tbody>
+                                                    {% for via in viatico_no_realizados %}
+                                                        <tr class="even pointer">
+                                                            <td style="font-size: 12px;">{{via.nombre}} {{via.apellidoP}} {{via.apellidoM}}</td>
+                                                            <td>{{via.ncontrol}}</td>
+                                                            <td>{{via.ci}}</td>
+                                                            <td>{{via.fecha_salida|date:'d-m-Y'}}</td>     
+                                                            <td>{{via.fecha_llegada|date:'d-m-Y'}}</td>     
+                                                            <td>{{via.monto}}</td>
+                                                            <td>{{via.lugar}}</td>
+                                                            <!--<td class="project_progress">
+                                                                <div class="progress progress_sm">
+                                                                    <div class="progress-bars bg-green" data-transitiongoal="{{via.barra}}" aria-valuenow="{{via.barra}}" style="width:{{via.barra}}%;"></div>
+                                                                </div>
+                                                                <small>{{via.barra}}% Complete</small>
+                                                            </td>-->
+                                                            <td class="project_progress">                                                                
+                                                                <div class="progress progress_sm">
+                                                                    <div class="progress-bars bg-green" data-transitiongoal="0" aria-valuenow="0" style="width:0%;"></div>
+                                                                </div>
+                                                                <small>0% Aun no Viajo</small>                                                                                                              
+                                                            </td>
+                                                            <td>
+                                                                <a onclick="return abrir_modal('{% url 'viaticos:detalle_viatico' via.slug %}')" class="btn btn-primary btn-xs"><i class="fa fa-eye"></i> Ver</a>
+                                                                                  
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>      
+                                    </div>
+                                </div>
+                                {% if viatico_no_realizados_tama|to_int >= 12 %}
+                                    <div style="text-align: center">
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-center">
+                                                <li class="page-item">
+                                                    {% if viatico_no_realizados.has_previous %}
+                                
+                                                    <a href="?paged={{ viatico_no_realizados.previous_page_number }}&valor_proceso=3"><< Atras</a>
+                                                    {% endif %}
+                                                </li>
+                                                <li class="page-item">
+                                                    <span class="current">
+                                                        Pagina {{ viatico_no_realizados.number }} de {{ viatico_no_realizados.paginator.num_pages }}
+                                                    </span>
+                                                </li>
+                                                <li class="page-item">
+                                                    {% if viatico_no_realizados.has_next %}
+                                                    <a href="?paged={{ viatico_no_realizados.next_page_number }}&valor_proceso=3">Adelante >></a>
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                {%endif%}
+                            {%else%}
+                                <br>
+                                <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                                    <div class="alert" style="background-color: rgba(255, 222, 222, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            ×</button>                                        
+                                        <p style="color: black;"  class="error">NO HAY VIATICOS POR EL MONENTO CON ESE TIPO DE VIAJE</p>
+                                    </div>
+                                </div>
+                            {%endif%}
+                        </p>
+                      </div>
+                    </div>
+                  </div>      
+                </div>
+              </div>
+            </div> 
+        </div>
+    </div> 
+    <div id="popup" class="modal fade" role="dialog"></div>     
+</div>
+<script>function abrir_modal(url){$('#popup').load(url, function(){$(this).modal('show');});return false;}function cerrar_modal(){$('#popup').modal('hide');return false;}</script>
+{% endblock content %}

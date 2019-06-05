@@ -1,0 +1,372 @@
+<!--391 frontera
+                    750.5
+
+222 rural
+371 urbana
+
+
+111	1/2
+222	1
+222	1
+
+195.5	1/2   391/2
+_____
+750.5
+
+3 dias 2 horas 0 min
+                    
+195.5   1/2
+222	1	
+-----
+***
+417.5-->
+
+Beni	
+        <option>Cercado</option>
+        <option>Iténez</option>
+        <option>General José Ballivián</option>
+        <option>Segurola</option>
+        <option>Mamoré</option>
+        <option>Marbán</option>
+        <option>Moxos</option>
+        <option>Vaca Díez y Yacuma</option>
+
+Chuquisaca	
+            <option>Belisario Boeto</option>
+            <option>Hernando Siles</option>
+            <option>Jaime Zudáñez</option>
+            <option>Juana Azurduy de Padilla</option>
+            <option>Luis Calvo</option>
+            <option>Nor Cinti</option>
+            <option>Oropeza</option>
+            <option>Sud Cinti</option>
+            <option>Tomina y Yamparáez</option>
+
+Cochabamba	
+            <option>Arani</option>
+            <option>Arque</option>
+            <option>Ayopaya</option>
+            <option>Bolívar</option>
+            <option>Capinota</option>
+            <option>José Carrasco</option>
+            <option>Cercado</option>
+            <option>Chapare</option>
+            <option>Esteban Arze</option>
+            <option>Germán Jordán</option>
+            <option>Mizque</option>
+            <option>Campero</option>
+            <option>Punata</option>
+            <option>Quillacollo</option>
+            <option>Tapacarí y Tiraque</option>
+
+
+La Paz	
+    <option>Abel Iturralde,</option>
+    <option>Aroma</option>
+    <option>Bautista Saavedra</option>
+    <option>Caranavi</option>
+    <option>Eliodoro Camacho</option>
+    <option>Franz Tamayo</option>
+    <option>Gualberto Villarroel</option>
+    <option>Ingaví</option>
+    <option>Inquisivi</option>
+    <option>General José Manuel Pando</option>
+    <option>José Ramón Loayza</option>
+    <option>Larecaja</option>
+    <option>Los Andes</option>
+    <option>Manco Kapac</option>
+    <option>Muñecas</option>
+    <option>Nor Yungas</option>
+    <option>Omasuyos</option>
+    <option>Pacajes</option>
+    <option>Pedro Domingo Murillo y ud Yungas
+
+Oruro	
+    <option>Sabaya</option>
+    <option>Carangas</option>
+    <option>Cercado</option>
+    <option>Eduardo Avaroa</option>
+    <option>Ladislao Cabrera</option>
+    <option>Litoral de Atacama</option>
+    <option>Nor Carangas</option>
+    <option>Pantaleón Dalence</option>
+    <option>Poopó</option>
+    <option>Mejillones</option>
+    <option>Sajama</option>
+    <option>San Pedro de Totora</option>
+    <option>Saucarí</option>
+    <option>Sebastián Pagador</option>
+    <option>Sud Carangas y Toás Barrón</option>
+
+Pando		
+    <option>Abuná</option>
+    <option>General Federico Román</option>
+    <option>Madre de Dios</option>
+    <option>Manuripi y Nicoás Suárez</option>
+
+Potosí	
+    <option>Alonso de Ibáñez</option>
+    <option>Antonio Quijarro</option>
+    <option>Bernardino Bilbao</option>
+    <option>Charcas</option>
+    <option>Chayanta</option>
+    <option>Cornelio Saavedra</option>
+    <option>Daniel Campos</option>
+    <option>Enrique Baldivieso</option>
+    <option>José María Linares</option>
+    <option>Modesto Omiste</option>
+    <option>Nor Chichas</option>
+    <option>Nor Lípez</option>
+    <option>Rafael Bustillo</option>
+    <option>Sud Chichas</option>
+    <option>Sud Lípez y Tmás Frías</option>
+
+Santa Cruz		
+    <option>Andrés Ibáñez</option>
+    <option>Ángel Sandóval</option>
+    <option>Chiquitos</option>
+    <option>Cordillera</option>
+    <option>Florida</option>
+    <option>Germán Busch</option>
+    <option>Guarayos</option>
+    <option>Ichilo</option>
+    <option>Warnes</option>
+    <option>Velasco</option>
+    <option>Caballero</option>
+    <option>Ñuflo de Chaves</option>
+    <option>Obispo Santistevan</option>
+    <option>Sara y Vllegrande</option>
+
+Tarija	
+    <option>Aniceto Arce</option>
+    <option>Burdet O'Connor</option>
+    <option>Cercado (Tarija)</option>
+    <option>Eustaquio Méndez</option>
+    <option>Gran Chaco</option>
+    <option>José María Avilés y Lag Titicaca
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> Datos Personales</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 col-xs-12">
+                                        <div class="form-horizontal">               
+                                            <label class="col-xs-4 control-label">Nombre :</label>
+                                            <p class="form-control-static">{{viatico.solicitante.nombre|upper}}</p>  
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-xs-12">
+                                        <div class="form-horizontal">               
+                                            <label class="col-xs-4 control-label">Apellidos : </label>
+                                            <p class="form-control-static">{{viatico.solicitante.apaterno|upper}} {{viatico.solicitante.amaterno|upper}}</p>             
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-xs-12">
+                                        <div class="form-horizontal">               
+                                            <label class="col-xs-4 control-label">CI :</label>
+                                            <p class="form-control-static">{{viatico.solicitante.ci}}</p>  
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-xs-12">
+                                        <div class="form-horizontal">               
+                                            <label class="col-xs-4 control-label">Area : </label>
+                                            <p class="form-control-static">{{viatico.solicitante.secretaria.nombreS}}</p>             
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-2 col-md-offset-1 col-xs-2">
+                                        <div class="form-group">
+                                            <label class="control-label" for="email">U.E.</label>
+                                            {% if viatico.ue < 10 %}
+                                                <input id="date" name="date" type="text" value="0{{viatico.ue}}" disabled class="input form-control">
+                                            {%else%}
+                                                <input id="date" name="date" type="text" value="{{viatico.ue}}" disabled class="input form-control">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-xs-2">
+                                        <div class="form-group">
+                                            <label class="control-label" for="date">PROG.</label>
+                                            {% if viatico.prog < 10 %}
+                                                <input id="date" name="date" type="text" value="0{{viatico.prog}}" disabled class="input form-control">
+                                            {%else%}
+                                                <input id="date" name="date" type="text" value="{{viatico.prog}}" disabled class="input form-control">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-xs-2">
+                                        <div class="form-group">
+                                            <label class="control-label" for="date">PROY.</label>
+                                            {% if viatico.proy != None %}
+                                                {% if viatico.act < 10 %}
+                                                    <input id="date" name="date" type="text" value="0{{viatico.proy}}" disabled class="input form-control">
+                                                {%else%}
+                                                    <input id="date" name="date" type="text" value="{{viatico.proy}}" disabled class="input form-control">
+                                                {% endif %}
+                                            {% else %}
+                                                <input id="date" name="date" type="text" value="" disabled class="input form-control">    
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-xs-2">
+                                        <div class="form-group">
+                                            <label class="control-label" for="date">ACT.</label>
+                                            {% if viatico.act < 10 %}
+                                                <input id="date" name="date" type="text" value="0{{viatico.act}}" disabled class="input form-control">
+                                            {%else%}
+                                            <input id="date" name="date" type="text" value="{{viatico.act}}" disabled class="input form-control">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-xs-4">
+                                        <div class="form-group">
+                                            <label class="control-label" for="date">N. DE CONTROL.</label>
+                                            <input id="date" name="date" type="text" value="{{viatico.ncontrol}}"  disabled class="input form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel-body">
+                            <div class="col-md-12 col-sm-12 col-xs-12  ">
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="height: 234px;">
+                                        <div class="row">
+                                            <div class="col-md-3 col-xs-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="date">Pasaje</label>
+                                                    <input id="date" name="date" type="text" value="{{viatico.pasaje|floatformat:2}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 col-xs-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="date">Peaje</label>
+                                                    <input id="date" name="date" type="text" value="{{viatico.peaje|floatformat:2}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xs-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="date">Lugar</label>
+                                                    <input id="date" name="date" type="text" value="{{viatico.lugar}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-xs-2 " style="margin-top: 55px;">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="email">Importe.</label>
+                                                    <input id="email" name="email" type="text" value="{{viatico.Monto_pagado|floatformat:2}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-xs-2" style="margin-top: 55px;">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="email">RC-IVA.</label>
+                                                    <input id="email" name="email" type="text" value="{{viatico.RC_IVA|floatformat:2}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-xs-4 " style="margin-top: 55px;">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="email">Liquido Pag.</label>
+                                                    <input id="email" name="email" type="text" value="{{viatico.Liquido_pagable|floatformat:2}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-xs-4 " style="margin-top: 55px;">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="email">Total Cancelar</label>
+                                                    <input id="email" name="email" type="text" value="{{viatico.totalC|floatformat:2}}" disabled class="input form-control">
+                                                </div>
+                                            </div>  
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel-body">
+                            <div class="col-md-12 col-sm-12 col-xs-12  ">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="row"> 
+                                            <div class="col-md-6 col-xs-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="date">Fecha Salida.</label>
+                                                    <input id="date" name="date" type="text" value="{{viatico.fecha_salida|date:'d-m-Y'}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xs-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="date">Hora Salida.</label>
+                                                    <input id="date" name="date" type="text" value="{{viatico.horaSalida|time:"H:i"}}" disabled  class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xs-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="date">Fecha Llegada.</label>
+                                                    <input id="date" name="date" type="text" value="{{viatico.fecha_legada|date:'d-m-Y'}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xs-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="date">Hora Llegada.</label>
+                                                    <input id="date" name="date" type="text" value="{{viatico.horallegada|time:"H:i"}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5 col-xs-5">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="date">Calculo de Tiempo.</label>
+                                                    <input id="date" name="date" type="text" value="{{viatico.calculohora}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-xs-2">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="date">Dias.</label>
+                                                    <input id="date" name="date" type="text" value="{{viatico.dias}}" disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-5 col-xs-5">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="date">Calculo de Viaje.</label>
+                                                    <input id="date" name="date" type="text" value="{{viatico.fechav}}"  disabled class="input form-control">
+                                                </div>
+                                            </div>
+                                        
+
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>         
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="text-center">
+                        <a class="btn btn-primary btn-lg  fa fa-pencil" data-original-title="Edit" data-placement="top" href="{% url 'viaticos:editar' viatico.slug %}"> Editar</a> 
+                        <a class="btn btn-warning btn-lg fa fa-undo" data-original-title="Edit" data-placement="top" href="{%url "viaticos:detail" %}"> Cancelar</a> 
+                    </div> 
+                </div>
+                        
+            </div>
+        </div>
+    </div>     
+</div> 

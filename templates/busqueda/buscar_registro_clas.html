@@ -1,0 +1,157 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% load tag_library %}
+{% block title %} Buscar Emepleado {% endblock title %}
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+{% block content %}
+
+<div class="right_col" role="main">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Ver historial de cada Viatico</h2>                
+                    <div class="clearfix"></div>
+                </div>
+                <form method="POST" action="{% url "viaticos:buscar_registro" %} ">
+                    {% csrf_token %}
+                    <div style="margin-right: -19px;margin-left: -19px;">
+                        <div class="col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label for="usr">Número de Control</label>
+                                <input type="text" class="form-control" id="usr" name="numerocontrol" value="{{ncontrol}}" placeholder="Introdusca un N.C.">
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group ">
+                                <label for="">Meses</label>
+                                <select name="meses" class="form-control">
+                                    {% if mese %}
+                                        <option>...</option>
+                                        {% for a in meses%}
+                                            {% if a|lower == mese|lower %}
+                                                <option value="{{a}}" selected>{{a}}</option>
+                                            {%else%}
+                                                <option value="{{a}}">{{a}}</option>
+                                            {%endif %}
+                                        {% endfor%}
+                                    {% else%}
+                                        <option selected>...</option>
+                                        {% for a in meses%}
+                                            <option value="{{a}}">{{a}}</option>
+                                        {% endfor%} 
+                                    {%endif%}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-6">
+                            <div class="form-group ">
+                                <label for="">Gestion</label>
+                                <select name="gestion" class="form-control">                                   
+                                    <option>...</option>
+                                    {% for a in anos%}
+                                        {% if a.ano|to_int == gestion|to_int %}
+                                            <option value="{{a.ano}}" selected>{{a.ano}}</option>
+                                        {%else%}
+                                            <option value="{{a.ano}}">{{a.ano}}</option>
+                                        {%endif %}
+                                    {% endfor%}                                                       
+                                </select>
+                            </div>
+                        </div>
+                       
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <label for="fecha">Una Fecha Especifica</label>
+                                <input type="date" class="form-control" id="fecha" name="fecha" value="{{fecha}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center">
+                        <input type="submit" class="btn btn-primary btn-sm" style="margin-top: 18px;">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12" id="mostrarerrordjango" {% if error %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+            <div class="alert" style="background-color: rgba(255, 255, 255, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                    ×</button>
+                <span class="glyphicon glyphicon-remove"></span> <strong style="color: black;">Error en la consulta</strong>
+                <hr class="message-inner-separator">
+                <p style="color: black;">{{error|linebreaksbr}}</p>
+            </div>
+        </div>
+
+
+        <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12" style="display: none;" id="mostrarerror">
+            <div class="alert" style="background-color: rgba(255, 255, 255, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                    ×</button>
+                <span class="glyphicon glyphicon-remove"></span> <strong style="color: black;">Error en la consulta</strong>
+                <hr class="message-inner-separator">
+                <p style="color: black;" id="error" class="error"></p>
+            </div>
+        </div>
+        {% if via %}
+            <div class="x_content">
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                            <tr class="headings">    
+                                <th>Nombre y Apellido</th>
+                                <th>Ci</th>
+                                <th>Importe</th>
+                                <th>Total a Cancelar</th>
+                                <th>Lugar</th>
+                                <th>N° de Control</th>
+                                
+                                <th>Encargado</th> 
+                                <th></th>
+                            </tr>
+                        </thead>
+        
+                        <tbody>
+                            {% for viaticos in via %}
+                                <tr class="even pointer">
+                                    <td>{{viaticos.nombre}} {{viaticos.apaterno}} {{viaticos.amaterno}}</td>
+                                    <td>{{viaticos.ci}}</td>     
+                                    <td>{{viaticos.Monto_pagado|floatformat:2}}</td>
+                                    
+                                    <td>{{viaticos.totalC|floatformat:2}}</td>
+                                    <td>{{viaticos.lugar}}</td>
+                                    <td>{{viaticos.ncontrol}}</td>
+                                    <td>{{viaticos.encargado}}</td>
+                                    <td>
+                                        {% if user.is_authenticated %}                                                                                                                                                                                 
+                                            <a onclick="return abrir_modal('{% url 'viaticos:detalle_viatico' viaticos.slug %}')" class="btn btn-primary btn-xs"><i class="fa fa-eye"></i> Ver</a>                                             
+                                            {% if perms.viaticos.delete_viaticodiario%}
+                                                {% if viaticos.cod_u == request.user.id or user.is_superuser %}                                                            
+                                                    <a onclick="return abrir_modal('{% url 'viaticos:borrarviatico' viaticos.slug %}')" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Eliminar</a>                                                                                                                                                    
+                                                {% endif%}
+                                            {% endif%}
+                                            {% if perms.viaticos.change_viaticodiario%}
+                                                {% if viaticos.cod_u == request.user.id or user.is_superuser %}                                                                                                                
+                                                    <a href="{% url 'viaticos:modiviaticoclass' viaticos.slug %}" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Editar</a>                                                                                                                                                     
+                                                {% endif%}
+                                            {%endif%}
+                                        {%endif%}
+
+                                        
+                                        
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {%endif%}        
+    </div><div id="popup" class="modal fade" role="dialog"></div> 
+</div>
+<script>function abrir_modal(url){$('#popup').load(url, function(){$(this).modal('show');});return false;}function cerrar_modal(){$('#popup').modal('hide');return false;}</script>
+{% endblock content %}

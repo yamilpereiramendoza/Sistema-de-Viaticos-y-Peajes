@@ -1,0 +1,827 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% load tag_library %}
+{% block title %} Dashboard 1 {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<style>
+    input[name=nombre],input[name=apellido],input[name=ci],input[name=cargo] {
+        pointer-events: none;
+    }
+    .ln_solid {
+        border-top: 1px solid #e5e5e5;
+        color: #ffffff;
+        background-color: #ffffff;
+        height: 1px;
+        margin: 9px 0;
+    }
+</style>
+<div class="right_col" role="main">
+    <div class="">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                    <h2>Formulario de registro de Viaticos</h2>
+                    <div class="clearfix"></div>
+                    </div> 
+                    <div class="row"> 
+                        <div class="title_right">
+                            <form id="buscar_user_ajax" class="navbar-form" role="search" action="{% url "viaticos:buscaruser" %}" >
+                                {% csrf_token %}
+                                <div class="col-md-12 col-sm-12 col-xs-12 form-group pull-right top_search">
+                                    <div class="input-group">
+                                    <input type="text" class="form-control" name="user_id" id="user_id" placeholder="Introduzca un C.I...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default"  id="enviar" type="submit">Buscar</button>
+                                    </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>                 
+                    </div>
+                       
+                    <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12" style="display: none;" id="errorajax">
+                        <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                ×</button>
+                            <span class="glyphicon glyphicon-remove"></span> <strong style="color: black;" id="messageajax"></strong>
+                        </div>
+                    </div>
+                    <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12"  {% if erroruser %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+                        <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                ×</button>
+                            <p style="color: black;">{{erroruser|linebreaksbr}}</p>
+                        </div>
+                    </div>
+                    {% if form.errors %}
+                        {% if form.errors.id_solicitante%}
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                                    <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            ×</button>
+                                        <p style="color: black;">
+                                            {{form.id_solicitante.errors}}                                            
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>  
+                        {%endif%}                                                  
+                    {% endif %}
+                    <form action="{% url "viaticos:SolicitudCreate" %}" name="some_form" method="POST">
+                        {% csrf_token %}          
+                        <div class="row">
+                            <div class="col-md-2 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="email">Nombre</label>
+                                    <input id="id_nombre" name="nombre" type="text" value="{{nombre}}"  class="input form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-5 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="date">Apellido.</label>
+                                    <input id="id_apellido" name="apellido" type="text" value="{{apellido}}"  class="input form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-3 col-xs-12">
+                                <div class="form-group">
+                                    <label class="control-label" for="date">CI.</label>
+                                    <input id="id_ci" name="ci" type="text" value="{{ci}}"  class="input form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label class="control-label" for="date">Secretaria.</label>
+                                    <input id="id_cargo" name="cargo" type="text" value="{{cargo}}" class="input form-control"> 
+                                </div>
+                            </div>
+                        </div>                                   
+                        <div class="clearfix"></div>
+                        <div class="ln_solid"></div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12"  {% if error %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+                                <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                        ×</button>
+                                    <p style="color: black;">{{error|linebreaksbr}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        {% if form.errors %}
+                            {% if form.errors.ncontrol or form.errors.centralizador %}
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                                        <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                ×</button>
+                                            <p style="color: black;">
+                                                {{ form.errors.ncontrol }}
+                                                {{ form.errors.centralizador }}                                                                                               
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>  
+                            {%endif%}                                                  
+                        {% endif %}
+                        <div class="row">
+                            <div id="id_ue_"
+                            
+                                {% if form.tipo_viatico.value|to_int == 3 %} 
+                                    class="col-md-2 col-sm-3 col-xs-3"
+                                {%else%}
+                                    {%if form.horaSalida.value == '00:00' and form.horallegada.value == '00:00' %} 
+                                        class="col-md-2 col-sm-3 col-xs-3" 
+                                    {%else%} 
+                                        class="col-md-1 col-sm-3 col-xs-3" 
+                                    {%endif%}
+                                {%endif%}>
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.ue.id_for_label}}">{{form.ue.label}}</label>
+                                    {{form.ue}}                                    
+                                </div>
+                            </div>
+                            <div id="id_progra"  
+                                {% if form.tipo_viatico.value|to_int == 3 %} 
+                                    class="col-md-2 col-sm-3 col-xs-3"
+                                {%else%}
+                                    {%if form.horaSalida.value == '00:00' and form.horallegada.value == '00:00' %} 
+                                        class="col-md-2 col-sm-3 col-xs-3" 
+                                    {%else%} 
+                                        class="col-md-1 col-sm-3 col-xs-3" 
+                                    {%endif%}
+                                {%endif%}> 
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.prog.id_for_label}}">{{form.prog.label}}</label>
+                                    {{form.prog}}
+                                </div>
+                            </div>
+                            <div id="id_proyect" 
+                                {% if form.tipo_viatico.value|to_int == 3 %} 
+                                    class="col-md-2 col-sm-3 col-xs-3"
+                                {%else%}
+                                    {%if form.horaSalida.value == '00:00' and form.horallegada.value == '00:00' %} 
+                                        class="col-md-2 col-sm-3 col-xs-3" 
+                                    {%else%} 
+                                        class="col-md-1 col-sm-3 col-xs-3" 
+                                    {%endif%}
+                                {%endif%}>
+                            
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.proy.id_for_label}}">{{form.proy.label}}</label>
+                                    {{form.proy}}
+                                </div>
+                            </div>
+                            <div id="id_acti" 
+                                {% if form.tipo_viatico.value|to_int == 3 %} 
+                                    class="col-md-2 col-sm-3 col-xs-3"
+                                {%else%}
+                                    {%if form.horaSalida.value == '00:00' and form.horallegada.value == '00:00' %} 
+                                        class="col-md-2 col-sm-3 col-xs-3" 
+                                    {%else%} 
+                                        class="col-md-1 col-sm-3 col-xs-3" 
+                                    {%endif%}
+                                {%endif%}> 
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.act.id_for_label}}">{{form.act.label}}</label>
+                                    {{form.act}}
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-4">
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.ncontrol.id_for_label}}">{{form.ncontrol.label}}</label>
+                                    {{form.ncontrol}}
+                                </div>
+                            </div>
+                            <div id="id_central" 
+                                {% if form.tipo_viatico.value|to_int == 3 %} 
+                                    class="col-md-2 col-sm-3 col-xs-3"
+                                {%else%}
+                                    {%if form.horaSalida.value == '00:00' and form.horallegada.value == '00:00' %} 
+                                        class="col-md-2 col-sm-3 col-xs-3" 
+                                    {%else%} 
+                                        class="col-md-3 col-sm-3 col-xs-3" 
+                                    {%endif%}
+                                {%endif%}>
+                                
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.centralizador.id_for_label}}">{{form.centralizador.label}}</label>
+                                    {{form.centralizador}}
+                                </div>
+                            </div>
+                            <div id="resolucion" 
+                                {% if form.tipo_viatico.value|to_int == 3 %} 
+                                    style="display:none;"
+                                {%else%}
+                                    {%if form.horaSalida.value == '00:00' and form.horallegada.value == '00:00' %} 
+                                        style="display:none;" 
+                                    {%else%} 
+                                        style="display:block;" 
+                                    {%endif%} 
+                                {%endif%}
+
+                                class="col-md-3 col-sm-4 col-xs-4">                                
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.resolucion.id_for_label}}">{{form.resolucion.label}}</label>
+                                    {{form.resolucion}}
+                                  </div>
+                            </div>
+                        </div>                      
+                        <div class="clearfix"></div>
+                        <div class="ln_solid"></div>
+                        {% if form.errors %}
+                            {% if form.errors.monto or form.errors.pasaje or form.errors.peaje or form.errors.Extra or form.errors.tipo_viatico or form.errors.lugar or form.errors.cantidad_dias_fuera_pais or orm.errors.cambio_moneda%}
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                                        <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                ×</button>
+                                            <p style="color: black;">
+                                                {{ form.errors.pasaje}}
+                                                {{ form.errors.peaje}}
+                                                {{ form.errors.tipo_viatico}}
+                                                {{ form.errors.monto}}
+                                                {{ form.errors.cambio_moneda}}
+                                                {{ form.errors.cantidad_dias_fuera_pais}}
+                                                {{ form.errors.lugar}}                                                    
+                                                {{ form.errors.Extra}}                                                                                            
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>  
+                            {%endif%}                                                  
+                        {% endif %}
+                        <div class="row col-md-12 col-sm-12 col-xs-12"  {% if errorppl %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+                            <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                                <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                        ×</button>                                
+                                    <p style="color: black;">{{errorppl|linebreaksbr}}</p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="row">
+                            <div id="classpasaje" {%if form.horaSalida.value == '00:00' and form.horallegada.value == '00:00' %} class="col-md-1 col-sm-4 col-xs-4" {%else%} class="col-md-2 col-sm-4 col-xs-4" {%endif%} >
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.pasaje.id_for_label}}">{{form.pasaje.label}}</label>
+                                    {{form.pasaje}}
+                                </div>
+                            </div>
+                            <div id="classpeaje" {%if form.horaSalida.value == '00:00' and form.horallegada.value == '00:00' %} class="col-md-1 col-sm-4 col-xs-4" {%else%} class="col-md-2 col-sm-4 col-xs-4" {%endif%} >
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.peaje.id_for_label}}">{{form.peaje.label}}</label>
+                                    {{form.peaje}}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-2 col-sm-4  col-xs-4 ">
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.tipo_viatico.id_for_label}}">{{form.tipo_viatico.label}}</label>
+                                    {{form.tipo_viatico}}
+                                </div>
+                            </div>                            
+                                                                                                           
+                            <div id="id_monto_django" {% if form.tipo_viatico.value|to_int == 3 %} style="display: none"  {%endif%} >
+                                
+                                <div class="col-md-3 col-sm-4 col-xs-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form.monto.id_for_label}}">{{form.monto.label}}</label>                                        
+                                        {{form.monto}}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="cambiomoneda" {%if form.horaSalida.value == '00:00' and form.horallegada.value == '00:00' %} style="display:block;" {%else%} style="display:none;" {%endif%}>
+                                <div class="col-md-1 col-sm-4 col-xs-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form.cambio_moneda.id_for_label}}">{{form.cambio_moneda.label}}</label>
+                                        {{form.cambio_moneda}}
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-sm-4 col-xs-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form.cantidad_dias_fuera_pais.id_for_label}}">{{form.cantidad_dias_fuera_pais.label}}</label>
+                                        {{form.cantidad_dias_fuera_pais}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-4" {% if form.tipo_viatico.value|to_int == 3  %} style="pointer-events: none;" {%else%} style="pointer-events: auto;" {%endif%}>
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.lugar.id_for_label}}">{{form.lugar.label}}</label>
+                                    {{form.lugar}}
+                                </div>
+                            </div>
+                            <span class="palabra"></span>                                                                                   
+                            <div class="col-md-1 col-sm-4 col-xs-4">
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.Extra.id_for_label}}">{{form.Extra.label}}</label>                           
+                                    {{form.Extra}}
+                                </div>
+                            </div>
+                      
+                            <div   {% if form.tipo_viatico.value|to_int == 3  %} style="display: block" {%else%} style="display: none;" {%endif%} id="id_monto_js" >                                                                   
+                                
+                                <div class="col-md-3 col-sm-4 col-xs-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.tipos_viajante.id_for_label}}">{{form2.tipos_viajante.label}}</label>                                        
+                                        {{form2.tipos_viajante}}                                   
+                                    </div>
+                                </div>
+                         
+                                <!-- Estos son de urbana-->
+                                <div class="clearfix"></div>
+                                <div class="ln_solid"></div>
+                                <div id="errorfecha" class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12"  {% if errorfecha %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+                                    <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            ×</button>
+                                        <p style="color: black;">
+                                            {% for e in errorfecha %}
+                                                <li>{{e}}</li>
+                                            {%endfor%}                                            
+                                        </p>
+                                    </div>
+                                </div>                                
+                                <div class="col-md-3 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.fecha_inicial_urbana.id_for_label}}">{{form2.fecha_inicial_urbana.label}}</label>
+                                        {{form2.fecha_inicial_urbana}}                                        
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.fecha_llegada_urbana.id_for_label}}">{{form2.fecha_llegada_urbana.label}}</label>
+                                        {{form2.fecha_llegada_urbana}}                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.horaSalida_urbana.id_for_label}}">{{form2.horaSalida_urbana.label}}</label>
+                                        {{form2.horaSalida_urbana}}                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-xs-6 ">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.horallegada_urbana.id_for_label}}">{{form2.horallegada_urbana.label}}</label>
+                                        {{form2.horallegada_urbana}}                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 col-sm-4 col-xs-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.lugar_urbana.id_for_label}}">{{form2.lugar_urbana.label}}</label>
+                                        {{form2.lugar_urbana}}                                                                                
+                                    </div>
+                                </div>
+                   
+                       
+                                <!-- estos son de rural -->
+                                
+                                <div class="col-md-3 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.fecha_inicial_rural.id_for_label}}">{{form2.fecha_inicial_rural.label}}</label>
+                                        {{form2.fecha_inicial_rural}}                                        
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.fecha_llegada_rural.id_for_label}}">{{form2.fecha_llegada_rural.label}}</label>
+                                        {{form2.fecha_llegada_rural}}                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.horaSalida_rural.id_for_label}}">{{form2.horaSalida_rural.label}}</label>
+                                        {{form2.horaSalida_rural}}                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-xs-6 ">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.horallegada_rural.id_for_label}}">{{form2.horallegada_rural.label}}</label>
+                                        {{form2.horallegada_rural}}                                        
+                                    </div>
+                                </div>
+                                <!---->
+                                <div class="col-md-2 col-sm-4 col-xs-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.lugar_rural.id_for_label}}">{{form2.lugar_rural.label}} </label> 
+                                        {{form2.lugar_rural}}                                                                               
+                                    </div>
+                                </div>
+                               
+                                <div class="col-md-3 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.fecha_inicial_frontera.id_for_label}}">{{form2.fecha_inicial_frontera.label}}</label>
+                                        {{form2.fecha_inicial_frontera}}                                        
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.fecha_llegada_frontera.id_for_label}}">{{form2.fecha_llegada_frontera.label}}</label>
+                                        {{form2.fecha_llegada_frontera}}                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.horaSalida_frontera.id_for_label}}">{{form2.horaSalida_frontera.label}}</label>
+                                        {{form2.horaSalida_frontera}}                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-xs-6 ">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.horallegada_frontera.id_for_label}}">{{form2.horallegada_frontera.label}}</label>
+                                        {{form2.horallegada_frontera}}                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="{{form2.lugar_frontera.id_for_label}}">{{form2.lugar_frontera.label}}</label>                                        
+                                        {{form2.lugar_frontera}}                                        
+                                    </div>
+                                </div>                                                                                             
+                            </div>                                                         
+                            <div style="display: none">
+                                {{form.id_solicitante}}                                
+                            </div>
+                        </div>                                                        
+                        <div class="row" id="id_fechas" {% if form.tipo_viatico.value|to_int == 3 %} style="display: none"  {%endif%}>
+                            <div class="clearfix"></div>
+                            <div class="ln_solid"></div> 
+                            <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12"  {% if errorfecha %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+                                <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                        ×</button>
+                                    <p style="color: black;">{{errorfecha|linebreaksbr}}</p>
+                                </div>
+                            </div>
+                            {% if form.errors %}
+                                {% if form.errors.fecha_legada or form.errors.fecha_salida or form.errors.horaSalida or form.errors.horallegada %}
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                                            <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                    ×</button>
+                                                <p style="color: black;">
+                                                    {{form.fecha_salida.errors}}
+                                                    {{form.fecha_legada.errors}}                                                    
+                                                    {{form.horaSalida.errors}}
+                                                    {{form.horallegada.errors}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                {%endif%}                                                  
+                            {% endif %}
+
+                            <div class="col-md-3 col-sm-6 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.fecha_salida.id_for_label}}">{{form.fecha_salida.label}}</label>
+                                    {{form.fecha_salida}}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3 col-sm-6 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.fecha_legada.id_for_label}}">{{form.fecha_legada.label}}</label>
+                                    {{form.fecha_legada}}
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.horaSalida.id_for_label}}">{{form.horaSalida.label}}</label>
+                                    {{form.horaSalida}}
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-xs-6 ">
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.horallegada.id_for_label}}">{{form.horallegada.label}}</label>
+                                    {{form.horallegada}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="ln_solid"></div>
+                        <div class="row">
+                            <div class="col-md-12 col-xs-12  ">
+                                <div class="form-group">
+                                    <label class="control-label" for="{{form.obs.id_for_label}}">{{form.obs.label}}</label>
+                                    {{form.obs}}                                                               
+                                </div>
+                            </div>
+                        </div>            
+                        <div class="clearfix"></div>
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-4">
+                                <button class="btn btn-primary" type="button">Cancelar</button>
+                                <button type="submit" class="btn btn-success">Crear</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function fAgrega(){        
+        var lugar_urbana = document.getElementById('id_lugar_urbana');
+        var lugar_rural = document.getElementById('id_lugar_rural');
+        var lugar_frontera = document.getElementById('id_lugar_frontera');
+        cancatenar=lugar_urbana.value+"/"+lugar_rural.value+"/"+lugar_frontera.value
+        if (lugar_urbana.length != 0 && lugar_rural.length != 0 && lugar_frontera.length != 0){
+            $("#id_lugar").val(cancatenar);
+        }                
+    }
+    var tipo_viatico = document.getElementById('id_tipo_viatico');
+    
+    if (tipo_viatico.value == 1 || tipo_viatico.value == 2){
+        var theSelect = document.getElementById('id_monto');
+        var options = theSelect.getElementsByTagName('OPTION');
+        if (tipo_viatico.value == 1){
+            $.ajax({
+                data:{'id':tipo_viatico.value},
+                url:'/viaticos/buscar_posicion/',
+                type:'get',
+                success : function(data) {                                        
+                    var uno = Array(data.length)
+                    $.each(data, function(index, objeto){   
+                        uno.push(objeto.pk)
+                    }); 
+                    var posicion=uno.length/2;   
+                    $('#id_monto option').each(function() {
+                        for(var j=posicion; j<=uno.length; j++) { 
+                            if ( $(this).val() !=uno[j] ) {                        
+                                $(this).remove();
+                            }
+                            else{
+                                posicion++;
+                                break;
+                            }
+                        }                    
+                    });                  
+                },
+                error : function(message) {
+                    console.log(message);
+                }
+            })                                    
+        }                                     
+        if (tipo_viatico.value == 2){
+            $.ajax({
+                data:{'id':tipo_viatico.value},
+                url:'/viaticos/buscar_posicion/',
+                type:'get',
+                success : function(data) {                    
+                    
+                    var uno = Array(data.length)
+                    $.each(data, function(index, objeto){   
+
+                        uno.push(objeto.pk)
+                    }); 
+                    var posicion=uno.length/2;                    
+                    $('#id_monto option').each(function() {
+                        for(var j=posicion; j<=uno.length; j++) { 
+                            if ( $(this).val() !=uno[j] ) {                        
+                                $(this).remove();
+                            }
+                            else{
+                                posicion++;
+                                break;
+                            }
+                        }                    
+                    });                  
+                },
+                error : function(message) {
+                    console.log(message);
+                }
+            })           
+        }       
+    }
+    if ( $('#id_horaSalida').val()=='00:00' && $('#id_horaSalida').val()=='00:00'){
+        document.getElementById("id_horaSalida").style.pointerEvents = "none";
+        document.getElementById("id_horallegada").style.pointerEvents = "none";
+    }
+    if( !$('#id_tipo_viatico').val()) {
+        var theSelect = document.getElementById('id_monto');    
+        var options = theSelect.getElementsByTagName('OPTION');        
+        for(var i=0; i<options.length; i++) {
+            theSelect.removeChild(options[i]);
+            i--; 
+        }
+    }
+
+    $(document).on('change', '#id_tipo_viatico', function(event) {
+        var id_monto_django=document.getElementById("id_monto_django");
+        var id_monto_js=document.getElementById("id_monto_js");
+        if ($("#id_tipo_viatico option:selected").text() == "Otros"){               
+            id_monto_django.style.display = "none";
+            id_monto_js.style.display = "block";            
+            document.getElementById("id_fechas").style.display="none";
+            document.getElementById("id_lugar").style.pointerEvents ="none";
+            document.getElementById('classpasaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById('classpeaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById("cambiomoneda").style.display="none";
+            document.getElementById("errorfecha").style.display="none";                        
+            $("#id_lugar").val("");
+        }
+        else{ 
+            document.getElementById("errorfecha").style.display="none";          
+            id_monto_django.style.display = "block";       
+            id_monto_js.style.display = "none";
+            document.getElementById("id_fechas").style.display="block";
+            document.getElementById("id_lugar").style.pointerEvents ="auto";
+            var valor=document.getElementById("id_lugar").value;
+            var cont=0;
+            for(i=0;i<=1;i++){
+                if (valor.indexOf("/") > -1){
+                    cont++;
+                }
+            }
+            if (cont>0){
+                $("#id_lugar").val("");
+            }
+        }
+    });
+
+    $('select#id_monto').change(function () {
+        var optionSelected = $(this).find("option:selected");
+        var id  = optionSelected.val();
+        var monto_id   = optionSelected.text();
+        buscardolar=monto_id.substr((monto_id.length-2), monto_id.length);
+        if (buscardolar === '$.'){
+            document.getElementById("cambiomoneda").style.display="block";
+            document.getElementById('classpasaje').setAttribute('class', 'col-md-1 col-sm-4 col-xs-4');
+            document.getElementById('classpeaje').setAttribute('class', 'col-md-1 col-sm-4 col-xs-4');
+            document.getElementById('id_horaSalida').value="00:00";
+            document.getElementById("id_horaSalida").style.pointerEvents = "none";
+            document.getElementById('id_horallegada').value="00:00";
+            document.getElementById("id_horallegada").style.pointerEvents = "none";
+            document.getElementById("resolucion").style.display="none";
+            document.getElementById("id_progra").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_proyect").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_acti").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_central").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_ue_").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+        }
+        else{            
+            document.getElementById('classpasaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById('classpeaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById("cambiomoneda").style.display="none";
+            document.getElementById("resolucion").style.display="block";
+            document.getElementById("id_progra").setAttribute('class', 'col-md-1 col-sm-4 col-xs-4');
+            document.getElementById("id_proyect").setAttribute('class', 'col-md-1 col-sm-4 col-xs-4');
+            document.getElementById("id_acti").setAttribute('class', 'col-md-1 col-sm-4 col-xs-4');
+            document.getElementById("id_central").setAttribute('class', 'col-md-3 col-sm-4 col-xs-4');
+            document.getElementById("id_ue_").setAttribute('class', 'col-md-1 col-sm-3 col-xs-3');
+            horasalida=document.getElementById('id_horaSalida');
+            horallegada=document.getElementById('id_horallegada')
+            horasalida.style.pointerEvents = "auto";
+            horallegada.style.pointerEvents = "auto";
+            if (horasalida.value == "00:00"){
+                document.getElementById('id_horaSalida').value="";                                
+            }
+            if (horallegada.value == "00:00"){
+                document.getElementById('id_horallegada').value="";                
+            }
+            
+        }
+    });
+    $('select#id_tipo_viatico').change(function () {
+        var optionSelected = $(this).find("option:selected");
+        var id  = optionSelected.val();
+        var monto_id   = optionSelected.text();        
+        if(monto_id == "Servidor Publico" || monto_id == "Gobernador" ){
+            document.getElementById('classpasaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById('classpeaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById("id_progra").setAttribute('class', 'col-md-1 col-sm-3 col-xs-3');
+            document.getElementById("id_proyect").setAttribute('class', 'col-md-1 col-sm-3 col-xs-3');
+            document.getElementById("id_acti").setAttribute('class', 'col-md-1 col-sm-3 col-xs-3');
+            document.getElementById("id_central").setAttribute('class', 'col-md-3 col-sm-3 col-xs-3');
+            document.getElementById("id_ue_").setAttribute('class', 'col-md-1 col-sm-3 col-xs-3');
+            document.getElementById("cambiomoneda").style.display="none";
+            document.getElementById("errorfecha").style.display="none";
+            document.getElementById("resolucion").style.display="block";
+            horasalida=document.getElementById('id_horaSalida');
+            horallegada=document.getElementById('id_horallegada')
+            horasalida.style.pointerEvents = "auto";
+            horallegada.style.pointerEvents = "auto";
+            if (horasalida.value == "00:00"){
+                document.getElementById('id_horaSalida').value="";
+            }
+            if (horallegada.value == "00:00"){
+                document.getElementById('id_horallegada').value="";
+            }
+            $.ajax({
+                data:{'id':id},
+                url:'/viaticos/buscar_montos/',
+                type:'get',
+                success : function(data) {
+                    var html=""
+                    $.each(data, function(index, objeto){                        
+                        html +='<option value='+objeto.pk+'>'+objeto.Nombre+' '+objeto.Cantidad+'</option>'                             
+                    });
+                    $('#id_monto').html(html);
+                },
+                error : function(message) {
+                    console.log(message);
+                }
+            })
+        }
+        else{
+            if (monto_id == "Otros"){
+                document.getElementById("id_progra").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+                document.getElementById("id_proyect").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+                document.getElementById("id_acti").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+                document.getElementById("id_central").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+                document.getElementById("id_ue_").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+                document.getElementById("resolucion").style.display="none";
+            }
+        }        
+        if( !$('#id_tipo_viatico').val()) {
+            var theSelect = document.getElementById('id_monto');
+            var options = theSelect.getElementsByTagName('OPTION');
+            for(var i=0; i<options.length; i++) {
+                theSelect.removeChild(options[i]);
+                i--;
+            }
+        }  
+       
+    });
+    $('#enviar').click(function(e){ 
+        var id = $("#user_id").val();
+        $.ajax({
+            data: {'id': id},
+            url: '/viaticos/buscarusuario/',
+            type: 'get',
+            success : function(data) {
+                var object=JSON.parse(data);
+                if (object.error==200){
+                    var nombre=object.nombre.toUpperCase();
+                    var apellidos=(object.paterno+" "+object.materno).toUpperCase();
+                    var ci=object.ci;
+                    var cargo=object.cargo;
+                    var id=object.id;
+                    
+                    $("#id_id_solicitante").val(ci);
+                    $("#id_cargo").val(cargo);
+                    $("#id_nombre").val(nombre);
+                    $("#id_apellido").val(apellidos);
+                    $("#id_ci").val(ci);
+                } 
+                else 
+                    if (object.error==403){
+                        var error=document.getElementById("errorajax");
+                        var errorspan=document.getElementById("messageajax");
+                        error.style.display = "block";
+                        if (error.style.display = "block"){
+                            errorspan.innerHTML="EL EMPLEADO NO ESTA REGISTRADO POR FAVOR INTRUDUSCA UN C.I. VALIDO";
+                        }                        
+                        setTimeout(function() {
+                            $("#error").fadeOut(1000);
+                            error.style.display = "none";
+                        },5000);
+                        $("#id_cargo").val("");
+                        $("#id_nombre").val("");
+                        $("#id_apellido").val("");
+                        $("#id_ci").val("");
+                    }  
+                    else    
+                        if (object.error==500){
+                            var error=document.getElementById("errorajax");
+                            var errorspan=document.getElementById("messageajax");
+                            error.style.display = "block";
+                            if (error.style.display = "block"){
+                                errorspan.innerHTML="INTRODUSCA UN C.I.";
+                            }
+                            
+                            setTimeout(function() {
+                                $("#error").fadeOut(1000);
+                                error.style.display = "none";
+                            },5000);
+                            $("#id_cargo").val("");
+                            $("#id_nombre").val("");
+                            $("#id_apellido").val("");
+                            $("#id_ci").val("");
+                        }         
+            },
+            error : function(data) {
+                console.log(data); 
+                
+            }
+        });
+        e.preventDefault();
+    });
+</script>
+{% endblock content %}

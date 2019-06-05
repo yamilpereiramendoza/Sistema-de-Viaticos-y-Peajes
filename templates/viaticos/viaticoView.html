@@ -1,0 +1,912 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% load tag_library %}
+{% block title %} Dashboard 1 {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<style>
+    input[name=nombre],input[name=apellido],input[name=ci],input[name=cargo],input[name=ncontrol] {     
+        pointer-events: none;
+    }
+</style>
+<div class="right_col" role="main">
+    <div class="">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                    <h2>Formulario de Edicion de Viaticos</h2>
+                    <div class="clearfix"></div>
+                    </div> 
+           
+                    <form action="" name="some_form" method="POST">
+                        {% csrf_token %}    
+                        {% for viatico in viaticos%}      
+                            <div class="row">
+                                <div class="col-md-2 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label" for="email">Nombre</label>
+                                        <input id="id_nombre" name="nombre" type="text" value="{{ empleado.nombre}}"  class="input form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">Apellido.</label>
+                                        <input id="id_apellido" name="apellido" type="text" value="{{empleado.apaterno}} {{empleado.amaterno}}"  class="input form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">CI.</label>
+                                        <input id="id_ci" name="ci" type="text" value="{{empleado.ci}}"  class="input form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">Secretaria.</label>
+                                        <input id="id_cargo" name="cargo" type="text" value="{{empleado.secretaria.nombreS}}" class="input form-control"> 
+                                    </div>
+                                </div>
+                            </div>                                   
+                            <div class="clearfix"></div>
+                            <div class="ln_solid"></div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12"  {% if error %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+                                    <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            ×</button>
+                                        <p style="color: black;">{{error|linebreaksbr}}</p>
+                                    </div>
+                                </div>
+                            </div>                            
+                            <div class="row">
+                                <div id="id_ue_"                        
+                                    {% if viatico.tipo_viatico_id|to_int == 3 %} 
+                                        class="col-md-2 col-sm-3 col-xs-3"
+                                    {%else%}
+                                        {%if cambiomoneda %} 
+                                            class="col-md-2 col-sm-3 col-xs-3" 
+                                        {%else%} 
+                                            class="col-md-1 col-sm-3 col-xs-3" 
+                                        {%endif%}
+                                    {%endif%}>
+                                    <div class="form-group">
+                                        <label class="control-label" for="email">U.E.</label>
+                                        <select name="ue" class="monto input form-control">
+                                            <option>...</option>
+                                            {% for s in subsecre.ue %}
+                                                {% if s < 10%}
+                                                    {% if viatico.ue|to_int == s %}
+                                                        <option value="{{s}}" selected>0{{s}}</option>
+                                                    {%else%}
+                                                        <option value="{{s}}">0{{s}}</option>
+                                                    {%endif%}
+                                                {%else%}
+                                                    {% if viatico.ue|to_int == s %}
+                                                        <option value="{{s}}" selected>{{s}}</option>
+                                                    {%else%}
+                                                        <option value="{{s}}">{{s}}</option>
+                                                    {%endif%}                                                
+                                                {%endif%}                                             
+                                            {% endfor%}
+                                        </select>
+                                        <!--<input type="text" name="ue" class="input form-control" value="{{ue}}" id="id_ue">-->
+                                    </div>
+                                </div>
+                                <div id="id_progra"  
+                                    {% if viatico.tipo_viatico_id|to_int == 3 %} 
+                                        class="col-md-2 col-sm-3 col-xs-3"
+                                    {%else%}
+                                        {%if cambiomoneda %} 
+                                            class="col-md-2 col-sm-3 col-xs-3" 
+                                        {%else%} 
+                                            class="col-md-1 col-sm-3 col-xs-3" 
+                                        {%endif%}
+                                    {%endif%}> 
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">PROG.</label>
+                                        <select name="prog" class="monto input form-control">
+                                            <option>...</option>
+                                            {% for s in subsecre.prog %}
+                                                {% if s < 10%}
+                                                        {% if viatico.prog|to_int == s %}
+                                                        <option value="{{s}}" selected>0{{s}}</option>
+                                                    {%else%}
+                                                        <option value="{{s}}">0{{s}}</option>
+                                                    {%endif%}
+                                                {%else%}
+                                                    {% if viatico.prog|to_int == s %}
+                                                        <option value="{{s}}" selected>{{s}}</option>
+                                                    {%else%}
+                                                        <option value="{{s}}">{{s}}</option>
+                                                    {%endif%}                                                
+                                                {%endif%}                                             
+                                            {% endfor%}
+                                        </select>
+                                        <!--<input type="text" name="prog" class="input form-control" value="{{prog}}" id="id_prog">-->
+                                    </div>
+                                </div>
+                                <div id="id_proyect" 
+                                    {% if viatico.tipo_viatico_id|to_int == 3 %} 
+                                        class="col-md-2 col-sm-3 col-xs-3"
+                                    {%else%}
+                                        {%if cambiomoneda %} 
+                                            class="col-md-2 col-sm-3 col-xs-3" 
+                                        {%else%} 
+                                            class="col-md-1 col-sm-3 col-xs-3" 
+                                        {%endif%}
+                                    {%endif%}>
+                                
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">PROY.</label>
+                                        <select name="proy" class="monto input form-control">
+                                            <option>...</option>
+                                            {% for s in subsecre.proy %}
+                                                {% if s < 10%}
+                                                    {% if viatico.proy|to_int == s %}
+                                                        <option value="{{s}}" selected>0{{s}}</option>
+                                                    {%else%}
+                                                        <option value="{{s}}">0{{s}}</option>
+                                                    {%endif%}
+                                                {%else%}
+                                                    {% if viatico.proy|to_int == s %}
+                                                        <option value="{{s}}" selected>{{s}}</option>
+                                                    {%else%}
+                                                        <option value="{{s}}">{{s}}</option>
+                                                    {%endif%}
+                                                {%endif%}                                                 
+                                            {% endfor%}
+                                        </select>
+                                        <!--<input type="text" name="proy" class="input form-control" value="{{proy}}" id="id_proy">-->
+                                    </div>
+                                </div>
+                                <div id="id_acti" 
+                                    {% if viatico.tipo_viatico_id|to_int == 3 %} 
+                                        class="col-md-2 col-sm-3 col-xs-3"
+                                    {%else%}
+                                        {%if cambiomoneda %} 
+                                            class="col-md-2 col-sm-3 col-xs-3" 
+                                        {%else%} 
+                                            class="col-md-1 col-sm-3 col-xs-3" 
+                                        {%endif%}
+                                    {%endif%}> 
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">ACT.</label>
+                                        <select name="act" class="monto input form-control">
+                                            <option>...</option>
+                                            {% for s in subsecre.act %}
+                                                {% if s < 10%}
+                                                    {% if viatico.act|to_int == s %}
+                                                        <option value="{{s}}" selected>0{{s}}</option>
+                                                    {%else%}
+                                                        <option value="{{s}}">0{{s}}</option>
+                                                    {%endif%}
+                                                {%else%}
+                                                    {% if viatico.act|to_int == s %}
+                                                        <option value="{{s}}" selected>{{s}}</option>
+                                                    {%else%}
+                                                        <option value="{{s}}">{{s}}</option>
+                                                    {%endif%}
+                                                {%endif%}                                                
+                                            {% endfor%}
+                                        </select>
+                                        <!--<input type="text" name="act" class="input form-control" value="{{act}}" id="id_act">-->
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">N. De control</label>
+                                        <input type="text" name="ncontrol" class="input form-control" value="{{viatico.ncontrol}}" id="id_ncontrol">
+                                    </div>
+                                </div>
+                                <div id="id_central" 
+                                    {% if viatico.tipo_viatico_id|to_int == 3 %} 
+                                        class="col-md-2 col-sm-3 col-xs-3"
+                                    {%else%}
+                                        {%if cambiomoneda %} 
+                                            class="col-md-2 col-sm-3 col-xs-3" 
+                                        {%else%} 
+                                            class="col-md-3 col-sm-3 col-xs-3" 
+                                        {%endif%}
+                                    {%endif%}>
+                                    
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">N. De Centralizador</label>
+                                        <input type="number" name="centralizador" class="input form-control" value="{{viatico.centralizador}}" id="id_centralizador">
+                                    </div>
+                                </div>
+                                <div id="resolucion" 
+                                    {% if viatico.tipo_viatico_id|to_int == 3 %} 
+                                        style="display:none;"
+                                    {%else%}
+                                        {%if cambiomoneda %} 
+                                            style="display:none;" 
+                                        {%else%} 
+                                            style="display:block;" 
+                                        {%endif%} 
+                                    {%endif%}
+
+                                    class="col-md-3 col-sm-4 col-xs-4">                                
+                                    <div class="form-group">
+                                        <label for="sel1">Resolucion O Aprobacion:</label>
+                                        
+                                        <select name="resolucion_aprovado" class="form-control" id="sel1">
+                                        
+                                        {% for r in resolucion %}
+                                            {% if r.pk == resolucion%}
+                                                <option value="{{r.pk}}" selected>{{r.tipo}}</option>
+                                            {%else%}
+                                                <option value="{{r.pk}}">{{r.tipo}}</option>
+                                            {%endif%}
+                                        {%endfor%}                                  
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>                      
+                            <div class="clearfix"></div>
+                            <div class="ln_solid"></div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12"  {% if errorppl %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+                                    <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                            ×</button>                                
+                                        <p style="color: black;">{{errorppl|linebreaksbr}}</p>
+                                    </div>
+                                </div>
+                            </div> 
+                            
+
+
+                            <div class="row">
+                                <div id="classpasaje" {%if viatico.cambiomoneda %} class="col-md-1 col-sm-4 col-xs-4" {%else%} class="col-md-2 col-sm-4 col-xs-4" {%endif%}>
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">Pasaje</label>
+                                        {% if viatico.pasaje|to_int == 0  %}
+                                            <input type="text" name="pasaje" value="" class="input form-control" id="id_pasaje">
+                                        {% else%}
+                                            <input type="text" name="pasaje" value="{{viatico.pasaje}}" class="input form-control" id="id_pasaje">
+                                        {%endif%}
+                                        
+                                    </div>
+                                </div>
+                                <div id="classpeaje" {%if viatico.cambiomoneda %} class="col-md-1 col-sm-4 col-xs-4" {%else%} class="col-md-2 col-sm-4 col-xs-4" {%endif%}>
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">Peaje</label>
+                                        {% if viatico.peaje|to_int == 0  %}
+                                            <input type="text" name="peaje" value="" class="input form-control" id="id_peaje">
+                                        {% else%}
+                                            <input type="text" name="peaje" value="{{viatico.peaje}}" class="input form-control" id="id_peaje">
+                                        {%endif%}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-2 col-sm-4  col-xs-5 ">
+                                    <div class="form-group">
+                                        <label class="control-label" for="email">Tipo Viatico</label>
+                                        
+                                        <select name="tipo_viatico" class="monto input form-control" id="id_tipo_viatico">
+                                            {% for t in tipo_viajant%}
+                                                {% if t.id|to_int == viatico.tipo_viatico_id|to_int %}  
+                                                    <option value="{{t.id}}" selected>{{t.tipo_viajante}}</option>
+                                                {%else%}
+                                                    <option value="{{t.id}}">{{t.tipo_viajante}}</option>
+                                                {%endif %}                                                
+                                            {% endfor%}
+                                        </select>
+                                    </div>
+                                </div>  
+                                
+                              
+                                <div id="id_monto_django" {% if viatico.tipo_viatico_id|to_int == 3 %} style="display: none"  {%endif%}>                                                                                
+                                    <div class="col-md-3 col-sm-4 col-xs-4">
+                                        <div class="form-group">
+                                            <label class="control-label" for="id_monto">Monto</label>                                        
+                                            {% if Montos or mont%}                                                                                                                               
+                                                <select name="monto" class="monto input form-control" id="id_monto" style="font-size: 13px;padding-left: 1px;padding-right: 1px;">
+                                                {% for m in Montos%}                                                
+                                                    {% if m.id|to_int != 13 %}    
+                                                        {% if m.id|to_int == viatico.monto|to_int %}
+                                                            <option value="{{m.id}}" selected>{{m.descripcion}}</option>
+                                                        {%else%}
+                                                            <option value="{{m.id}}">{{m.descripcion}}</option>
+                                                        {%endif %}
+                                                    {%endif%}                                                                                                                                                                                            
+                                                {%endfor%}
+                                                </select>                                             
+                                            {%else%}                                                                      
+                                                <select name="monto" class="monto input form-control" id="id_monto" style="font-size: 13px;padding-left: 1px;padding-right: 1px;">
+                                                    <option value=""></option>
+                                                </select>                                                                                                                                                                                                                          
+                                            {%endif%}
+                                        </div>
+                                    </div> 
+                                    <!--<div {% if viatico.tipo_viatico_id|to_int == 3  %} style="display: block" {%else%} style="display: none;" {%endif%} id="id_monto_js" >   
+                                        <div class="form-group">
+                                            <label class="control-label" for="id_mont">Monto</label>
+                                            <input type="text" name="mont" id="id_mont" value="{{viatico.monto}}" class="input form-control" maxlength="70">                                    
+                                        </div>
+                                    </div>-->
+                                </div> 
+                                <div id="cambiomoneda" {%if viatico.cambiomoneda %} style="display:block;" {%else%} style="display:none;" {%endif%}>
+                                    <div class="col-md-1 col-sm-4 col-xs-4">
+                                        <div class="form-group">
+                                            <label class="control-label" for="date">Bs. a $.</label>
+                                            <input type="text" name="cambiomoneda" {% if viatico.cambiomoneda %} value ="{{viatico.cambiomoneda}}" {%else%} value="6.96"  {%endif%} class="input form-control" id="id_cambio" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-sm-4 col-xs-4">
+                                        <div class="form-group">
+                                            <label class="control-label" for="date">Dias</label>
+                                            <input type="number" name="cantidad_dias_fuera_dias" {% if viatico.cantidad_dias_fuera_pais|to_int != 0 %} value ="{{viatico.cantidad_dias_fuera_dias}}" {%endif%} class="input form-control" id="id_cambio" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-4 col-xs-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">Lugar</label>
+                                        <input type="text" name="lugar" id="id_lugar" value="{{viatico.lugar}}" class="input form-control" maxlength="70">
+                                    </div>
+                                </div>                                                                                   
+                                <div class="col-md-1 col-sm-4 col-xs-3 ">
+                                    <div class="form-group">
+                                        <label class="control-label" for="email">Extra</label>  
+                                        {% if viatico.Extra|to_int == 0  %}
+                                            <input type="text" name="Extra" value="" class="input form-control" id="id_Extra">
+                                        {% else%}
+                                            <input type="text" name="Extra" value="{{viatico.Extra}}" class="input form-control" id="id_Extra">
+                                        {%endif%}                   
+                                        
+                                    </div>
+                                </div>
+                                
+                                <div   {% if viatico.tipo_viatico_id|to_int == 3  %} style="display: block" {%else%} style="display: none;" {%endif%} id="id_monto_js" >                                                                                               
+                                    
+                                    <div class="col-md-3 col-sm-4 col-xs-4">
+                                        <div class="form-group">
+                                            <label class="control-label" for="id_mont">Otro Tipos</label>                                                                                                                               
+                                            <select name="tipo_viatico_others" class="monto input form-control" id="tipo_viatico_others">
+                                                {% for o in otro_tipos%}
+                                                    {% if o.id|to_int == otherviajess|to_int %}
+                                                        <option value="{{o.id}}" selected>{{o.tipo_viajante}}</option>
+                                                    {%else%}
+                                                    <option value="{{o.id}}">{{o.tipo_viajante}}</option>
+                                                    {%endif%}
+                                                {%endfor%}                                                                                                                                                                                                                  
+                                            </select>                                        
+                                        </div>
+                                    </div>
+                                
+                                    <!-- Estos son de urbana-->
+                                    
+                                    <div class="clearfix"></div>
+                                    <div class="ln_solid"></div>
+                                    <div id="errorfecha" class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12"  {% if errorfecha %} style="display: block;" {% else%} style="display: none;" {%endif%}>
+                                        <div class="alert" style="background-color: #f9ece1;border-top: solid 3px rgba(241, 134, 134, 0.88);">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                                ×</button>
+                                            <p style="color: black;">{{errorfecha|linebreaksbr}}</p>
+                                        </div>
+                                    </div> 
+                                    {% if otherviajes %}
+                                        {% for Otrosviajes in otherviajes %}
+                                                                    
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Salida Urbana</label>
+                                                <input type="date" name="fecha_salida_urbana" class="input form-control" value="{{Otrosviajes.fecha_inicial_urbana|date:'Y-m-d'}}" id="id_fecha_salida_urbana">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Llegada Urbana</label>
+                                                <input type="date" name="fecha_legada_urbana" class="input form-control" value="{{Otrosviajes.fecha_llegada_urbana|date:'Y-m-d'}}" id="id_fecha_legada_urbana">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Salida Urbana</label>
+                                                <input type="time" name="horaSalida_urbana" class="input form-control" {%if Otrosviajes.horaSalida_urbana != None %} value="{{Otrosviajes.horaSalida_urbana}}" {%endif%} id="id_horaSalida_urbana">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6 ">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Llegada Urbana</label>
+                                                <input type="time" name="horallegada_urbana" class="input form-control" {%if Otrosviajes.horallegada_urbana != None %} value="{{Otrosviajes.horallegada_urbana}}" {%endif%} id="id_horallegada_urbana">
+                                            </div>
+                                        </div>
+        
+                                        <div class="col-md-2 col-sm-4 col-xs-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="id_lugar_urbana">Lugar Urbana </label>                                        
+                                                <input type="text" name="lugar_urbana" {%if Otrosviajes.lugar_urbana != None %} value="{{Otrosviajes.lugar_urbana}}" {%endif%} class="input form-control" id="id_lugar_urbana" onkeyup="fAgrega();"  >                                            
+                                            </div>
+                                        </div>
+                            
+                                
+                                        <!-- estos son de rural -->
+                                        
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Salida Rural</label>
+                                                <input type="date" name="fecha_salida_rural" class="input form-control" value="{{Otrosviajes.fecha_inicial_rural|date:'Y-m-d'}}" id="id_fecha_salida_rural">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Llegada Rural</label>
+                                                <input type="date" name="fecha_legada_rural" class="input form-control" value="{{Otrosviajes.fecha_llegada_rural|date:'Y-m-d'}}" id="id_fecha_legada_rural">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Salida Rural</label>
+                                                <input type="time" name="horaSalida_rural" class="input form-control" {%if Otrosviajes.horaSalida_rural != None %} value="{{Otrosviajes.horaSalida_rural}}" {%endif%} id="id_horaSalida_rural">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6 ">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Llegada Rural</label>
+                                                <input type="time" name="horallegada_rural" class="input form-control" {%if Otrosviajes.horallegada_rural != None %} value="{{Otrosviajes.horallegada_rural}}" {%endif%} id="id_horallegada_rural">
+                                            </div>
+                                        </div>
+                                        <!---->
+                                        <div class="col-md-2 col-sm-4 col-xs-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="id_lugar_rural">Lugar Rural </label>                                        
+                                                <input type="text" name="lugar_rural" {%if Otrosviajes.lugar_rural != None %} value="{{Otrosviajes.lugar_rural}}" {%endif%} class="input form-control" id="id_lugar_rural" onkeyup="fAgrega();">                                            
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Salida Frontera</label>
+                                                <input type="date" name="fecha_salida_frontera" class="input form-control" value="{{Otrosviajes.fecha_inicial_frontera|date:'Y-m-d'}}" id="id_fecha_salida_frontera">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Llegada Frontera</label>
+                                                <input type="date" name="fecha_legada_frontera" class="input form-control" value="{{Otrosviajes.fecha_llegada_frontera|date:'Y-m-d'}}" id="id_fecha_legada_frontera">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Salida Frontera</label>
+                                                <input type="time" name="horaSalida_frontera" class="input form-control" {%if Otrosviajes.horaSalida_frontera != None %} value="{{Otrosviajes.horaSalida_frontera}}" {%endif%} id="id_horaSalida_frontera">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6 ">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Llegada Frontera</label>
+                                                <input type="time" name="horallegada_frontera" class="input form-control" {%if Otrosviajes.horallegada_frontera != None %} value="{{Otrosviajes.horallegada_frontera}}" {%endif%} id="id_horallegada_frontera">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-4 col-xs-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="id_lugar_frontera">Lugar Frontera </label>                                        
+                                                <input type="text" name="lugar_frontera" {%if Otrosviajes.lugar_frontera != None %} value="{{Otrosviajes.lugar_frontera}}" {%endif%} class="input form-control" id="id_lugar_frontera" onkeyup="fAgrega();">                                            
+                                            </div>
+                                        </div>                                                             
+                                    {%endfor%}
+                                    {% else%}
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Salida Urbana</label>
+                                                <input type="date" name="fecha_salida_urbana" class="input form-control" value="{{Otrosviajes.fecha_inicial_urbana|date:'Y-m-d'}}" id="id_fecha_salida_urbana">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Llegada Urbana</label>
+                                                <input type="date" name="fecha_legada_urbana" class="input form-control" value="{{Otrosviajes.fecha_llegada_urbana|date:'Y-m-d'}}" id="id_fecha_legada_urbana">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Salida Urbana</label>
+                                                <input type="time" name="horaSalida_urbana" class="input form-control" {%if Otrosviajes.horaSalida_urbana != None %} value="{{Otrosviajes.horaSalida_urbana}}" {%endif%} id="id_horaSalida_urbana">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6 ">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Llegada Urbana</label>
+                                                <input type="time" name="horallegada_urbana" class="input form-control" {%if Otrosviajes.horallegada_urbana != None %} value="{{Otrosviajes.horallegada_urbana}}" {%endif%} id="id_horallegada_urbana">
+                                            </div>
+                                        </div>
+        
+                                        <div class="col-md-2 col-sm-4 col-xs-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="id_lugar_urbana">Lugar Urbana </label>                                        
+                                                <input type="text" name="lugar_urbana" {%if Otrosviajes.lugar_urbana != None %} value="{{Otrosviajes.lugar_urbana}}" {%endif%} class="input form-control" id="id_lugar_urbana" onkeyup="fAgrega();"  >                                            
+                                            </div>
+                                        </div>
+                            
+                                
+                                        <!-- estos son de rural -->
+                                        
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Salida Rural</label>
+                                                <input type="date" name="fecha_salida_rural" class="input form-control" value="{{Otrosviajes.fecha_inicial_rural|date:'Y-m-d'}}" id="id_fecha_salida_rural">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Llegada Rural</label>
+                                                <input type="date" name="fecha_legada_rural" class="input form-control" value="{{Otrosviajes.fecha_llegada_rural|date:'Y-m-d'}}" id="id_fecha_legada_rural">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Salida Rural</label>
+                                                <input type="time" name="horaSalida_rural" class="input form-control" {%if Otrosviajes.horaSalida_rural != None %} value="{{Otrosviajes.horaSalida_rural}}" {%endif%} id="id_horaSalida_rural">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6 ">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Llegada Rural</label>
+                                                <input type="time" name="horallegada_rural" class="input form-control" {%if Otrosviajes.horallegada_rural != None %} value="{{Otrosviajes.horallegada_rural}}" {%endif%} id="id_horallegada_rural">
+                                            </div>
+                                        </div>
+                                        <!---->
+                                        <div class="col-md-2 col-sm-4 col-xs-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="id_lugar_rural">Lugar Rural </label>                                        
+                                                <input type="text" name="lugar_rural" {%if Otrosviajes.lugar_rural != None %} value="{{Otrosviajes.lugar_rural}}" {%endif%} class="input form-control" id="id_lugar_rural" onkeyup="fAgrega();">                                            
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Salida Frontera</label>
+                                                <input type="date" name="fecha_salida_frontera" class="input form-control" value="{{Otrosviajes.fecha_inicial_frontera|date:'Y-m-d'}}" id="id_fecha_salida_frontera">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-3 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Fecha Llegada Frontera</label>
+                                                <input type="date" name="fecha_legada_frontera" class="input form-control" value="{{Otrosviajes.fecha_llegada_frontera|date:'Y-m-d'}}" id="id_fecha_legada_frontera">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Salida Frontera</label>
+                                                <input type="time" name="horaSalida_frontera" class="input form-control" {%if Otrosviajes.horaSalida_frontera != None %} value="{{Otrosviajes.horaSalida_frontera}}" {%endif%} id="id_horaSalida_frontera">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-6 ">
+                                            <div class="form-group">
+                                                <label class="control-label" for="date">Hora Llegada Frontera</label>
+                                                <input type="time" name="horallegada_frontera" class="input form-control" {%if Otrosviajes.horallegada_frontera != None %} value="{{Otrosviajes.horallegada_frontera}}" {%endif%} id="id_horallegada_frontera">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-4 col-xs-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="id_lugar_frontera">Lugar Frontera </label>                                        
+                                                <input type="text" name="lugar_frontera" {%if Otrosviajes.lugar_frontera != None %} value="{{Otrosviajes.lugar_frontera}}" {%endif%} class="input form-control" id="id_lugar_frontera" onkeyup="fAgrega();">                                            
+                                            </div>
+                                        </div> 
+                                    {% endif%}
+                                    
+                                </div> 
+                                <div style="display: none">
+                                    <input type="text" name="id_solicitante" class="input form-control" id="id_id_solicitante" value="{{viatico.id_solicitante}}">
+                                </div>
+                            </div>        
+                           
+                            <div class="row" id="id_fechas" {% if viatico.tipo_viatico_id|to_int == 3 %} style="display: none"  {%endif%}>
+                                <div class="col-md-3 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">Fecha Salida.</label>
+                                        <input type="date" name="fecha_salida" class="input form-control" value="{{viatico.fecha_salida }}" id="id_fecha_salida">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">Fecha Llegada.</label>
+                                        <input type="date" name="fecha_legada" class="input form-control" value="{{viatico.fecha_legada}}" id="id_fecha_legada">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">Hora Salida.</label>
+                                        <input type="time" name="horaSalida" class="input form-control" value="{{viatico.horaSalida}}" id="id_horaSalida">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 col-xs-6 ">
+                                    <div class="form-group">
+                                        <label class="control-label" for="date">Hora Llegada.</label>
+                                        <input type="time" name="horallegada" class="input form-control" value="{{viatico.horallegada}}" id="id_horallegada">
+                                    </div>
+                                </div>
+                            </div>                            
+                                                                    
+                            <div class="clearfix"></div>
+                            <div class="ln_solid"></div>
+                            <div class="row">
+                                <div class="col-md-12 col-xs-12  ">
+                                    <div class="form-group">
+                                        <label class="control-label" for="email">Observaciones.</label>
+                                        <textarea name="obs" style="height: 50px !important; resize: vertical !important;" rows="10" maxlength="500" id="id_obs" class="input form-control" cols="40">{{viatico.obs}}</textarea>                            
+                                    </div>
+                                </div>
+                            </div>            
+                            <div class="clearfix"></div>
+                            <div class="ln_solid"></div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-4">                                    
+                                    <a class="btn btn-danger btn-lg fa fa-undo" data-original-title="Edit" data-placement="top" href="{%url "viaticos:detail" %}"> Cancelar</a> 
+                                    <button type="submit" class="btn btn-success">Guardar</button>
+                                </div>
+                            </div>
+                        {%endfor%}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function fAgrega(){        
+        var lugar_urbana = document.getElementById('id_lugar_urbana');
+        var lugar_rural = document.getElementById('id_lugar_rural');
+        var lugar_frontera = document.getElementById('id_lugar_frontera');
+        cancatenar=lugar_urbana.value+"/"+lugar_rural.value+"/"+lugar_frontera.value
+        if (lugar_urbana.length != 0 && lugar_rural.length != 0 && lugar_frontera.length != 0){
+            $("#id_lugar").val(cancatenar);
+        }                
+    }
+    console.log(document.getElementById("id_monto").length)
+    if( !$('#id_tipo_viatico').val()) {
+        var theSelect = document.getElementById('id_monto');
+        var options = theSelect.getElementsByTagName('OPTION');
+        for(var i=0; i<options.length; i++) {
+            theSelect.removeChild(options[i]);
+            i--; 
+        }
+    }
+    $(document).on('change', '#id_tipo_viatico', function(event) {
+        var id_monto_django=document.getElementById("id_monto_django");
+        var id_monto_js=document.getElementById("id_monto_js");
+        var optionSelected = $(this).find("option:selected");
+        var id  = optionSelected.val();
+        var monto_id   = optionSelected.text();
+        
+        if (monto_id == "Otros"){              
+            id_monto_django.style.display = "none";
+            id_monto_js.style.display = "block";            
+            document.getElementById("id_fechas").style.display="none";
+            document.getElementById("id_lugar").style.pointerEvents ="none";
+            document.getElementById('classpasaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById('classpeaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById("cambiomoneda").style.display="none";
+            document.getElementById("errorfecha").style.display="none";
+           
+            document.getElementById("id_fecha_salida_urbana").value="";
+            document.getElementById("id_fecha_legada_urbana").value="";
+            document.getElementById("id_horaSalida_urbana").value="";
+            document.getElementById("id_horallegada_urbana").value="";
+            document.getElementById("id_lugar_urbana").value="";
+            document.getElementById("id_fecha_salida_rural").value="";
+            document.getElementById("id_fecha_legada_rural").value="";
+            document.getElementById("id_horaSalida_rural").value="";
+            document.getElementById("id_horallegada_rural").value="";
+            document.getElementById("id_lugar_rural").value="";
+            document.getElementById("id_fecha_salida_frontera").value="";
+            document.getElementById("id_fecha_legada_frontera").value="";
+            document.getElementById("id_horaSalida_frontera").value="";
+            document.getElementById("id_horallegada_frontera").value="";
+            document.getElementById("id_lugar_frontera").value="";
+
+            $("#id_lugar").val("");
+        }
+        else{ 
+            
+            if (document.getElementById("id_monto").length == 0){
+                document.getElementById("id_fecha_salida").value="";
+                document.getElementById("id_fecha_legada").value="";
+                document.getElementById("id_horaSalida").value="";
+                document.getElementById("id_horallegada").value="";
+                document.getElementById("id_lugar").value="";
+            }            
+            document.getElementById("errorfecha").style.display="none";          
+            id_monto_django.style.display = "block";       
+            id_monto_js.style.display ="none";           
+            document.getElementById("id_fechas").style.display="block";
+            document.getElementById("id_lugar").style.pointerEvents ="auto";
+            var valor=document.getElementById("id_lugar").value;
+            var cont=0;
+            for(i=0;i<=1;i++){
+                if (valor.indexOf("/") > -1){
+                    cont++;
+                }
+            }
+            if (cont>0){
+                $("#id_lugar").val("");
+            }
+        }
+    });
+    $('select#id_monto').change(function () {
+        var optionSelected = $(this).find("option:selected");
+        var id  = optionSelected.val();
+        var monto_id   = optionSelected.text();
+        buscardolar=monto_id.substr((monto_id.length-2), monto_id.length);
+
+        if (buscardolar === '$.'){
+            document.getElementById("cambiomoneda").style.display="block";
+            document.getElementById('classpasaje').setAttribute('class', 'col-md-1 col-sm-4 col-xs-4');
+            document.getElementById('classpeaje').setAttribute('class', 'col-md-1 col-sm-4 col-xs-4');
+            document.getElementById('id_horaSalida').value="00:00";
+            document.getElementById('id_horallegada').value="00:00";
+            document.getElementById("resolucion").style.display="none";
+            document.getElementById("id_progra").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_proyect").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_acti").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_central").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_ue_").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+    
+        }
+        else{
+        
+            document.getElementById('classpasaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById('classpeaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById("cambiomoneda").style.display="none";
+            document.getElementById("resolucion").style.display="block";
+            document.getElementById("id_progra").setAttribute('class', 'col-md-1 col-sm-4 col-xs-4');
+            document.getElementById("id_proyect").setAttribute('class', 'col-md-1 col-sm-4 col-xs-4');
+            document.getElementById("id_acti").setAttribute('class', 'col-md-1 col-sm-4 col-xs-4');
+            document.getElementById("id_central").setAttribute('class', 'col-md-3 col-sm-4 col-xs-4');
+            document.getElementById("id_ue_").setAttribute('class', 'col-md-1 col-sm-3 col-xs-3');
+            horasalida=document.getElementById('id_horaSalida');
+            horallegada=document.getElementById('id_horallegada')
+            if (horasalida.value == "00:00"){
+                document.getElementById('id_horaSalida').value="";
+            }
+            if (horallegada.value == "00:00"){
+                document.getElementById('id_horallegada').value="";
+            }
+            
+        }
+    });
+    $('select#id_tipo_viatico').change(function () {
+        var optionSelected = $(this).find("option:selected");
+        var id  = optionSelected.val();
+        var monto_id   = optionSelected.text();
+     
+        
+        if(monto_id == "Servidor Publico" || monto_id == "Gobernador" ){
+            
+            document.getElementById('classpasaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById('classpeaje').setAttribute('class', 'col-md-2 col-sm-4 col-xs-4');
+            document.getElementById("id_progra").setAttribute('class', 'col-md-1 col-sm-3 col-xs-3');
+            document.getElementById("id_proyect").setAttribute('class', 'col-md-1 col-sm-3 col-xs-3');
+            document.getElementById("id_acti").setAttribute('class', 'col-md-1 col-sm-3 col-xs-3');
+            document.getElementById("id_central").setAttribute('class', 'col-md-3 col-sm-3 col-xs-3');
+            document.getElementById("id_ue_").setAttribute('class', 'col-md-1 col-sm-3 col-xs-3');
+            document.getElementById("cambiomoneda").style.display="none";
+            document.getElementById("errorfecha").style.display="none";
+            document.getElementById("resolucion").style.display="block";            
+            horasalida=document.getElementById('id_horaSalida');
+            horallegada=document.getElementById('id_horallegada')
+            if (horasalida.value == "00:00"){
+                document.getElementById('id_horaSalida').value="";
+            }
+            if (horallegada.value == "00:00"){
+                document.getElementById('id_horallegada').value="";
+            }
+
+            $.ajax({
+                data:{'id':id},
+                url:'/viaticos/buscar_montos/',
+                type:'get',
+                success : function(data) {
+                    var html=""
+                    $.each(data, function(index, objeto){                        
+                        html +='<option value='+objeto.pk+'>'+objeto.Nombre+' '+objeto.Cantidad+'</option>'                             
+                    });
+                    $('#id_monto').html(html);
+                },
+                error : function(message) {
+                    console.log(message);
+                }
+            })
+        }
+        else{
+            
+            document.getElementById("id_progra").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_proyect").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_acti").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_central").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');
+            document.getElementById("id_ue_").setAttribute('class', 'col-md-2 col-sm-3 col-xs-3');           
+            document.getElementById("resolucion").style.display="none";
+        }
+        if (monto_id == "..."){
+            if( !$('#id_tipo_viatico').val()) {
+                var theSelect = document.getElementById('id_monto');
+                var options = theSelect.getElementsByTagName('OPTION');
+                for(var i=0; i<options.length; i++) {
+                    theSelect.removeChild(options[i]);
+                    i--;
+                }
+            }  
+        }
+    });
+    $('#enviar').click(function(e){ 
+        var id = $("#user_id").val();
+        $.ajax({
+            data: {'id': id},
+            url: '/viaticos/buscarusuario/',
+            type: 'get',
+            success : function(data) {
+                var object=JSON.parse(data);
+                if (object.error==200){
+                    var nombre=object.nombre.toUpperCase();
+                    var apellidos=(object.paterno+" "+object.materno).toUpperCase();
+                    var ci=object.ci;
+                    var cargo=object.cargo;
+                    var id=object.id;
+                    
+                    $("#id_id_solicitante").val(ci);
+                    $("#id_cargo").val(cargo);
+                    $("#id_nombre").val(nombre);
+                    $("#id_apellido").val(apellidos);
+                    $("#id_ci").val(ci);
+                } 
+                else 
+                    if (object.error==403){
+                        var error=document.getElementById("errorajax");
+                        var errorspan=document.getElementById("messageajax");
+                        error.style.display = "block";
+                        if (error.style.display = "block"){
+                            errorspan.innerHTML="EL EMPLEADO NO ESTA REGISTRADO POR FAVOR INTRUDUSCA UN C.I. VALIDO";
+                        }
+                        
+                        setTimeout(function() {
+                            $("#error").fadeOut(1000);
+                            error.style.display = "none";
+                        },5000);
+                        $("#id_cargo").val("");
+                        $("#id_nombre").val("");
+                        $("#id_apellido").val("");
+                        $("#id_ci").val("");
+                    }  
+                    else    
+                        if (object.error==500){
+                            var error=document.getElementById("errorajax");
+                            var errorspan=document.getElementById("messageajax");
+                            error.style.display = "block";
+                            if (error.style.display = "block"){
+                                errorspan.innerHTML="INTRODUSCA UN C.I.";
+                            }
+                            
+                            setTimeout(function() {
+                                $("#error").fadeOut(1000);
+                                error.style.display = "none";
+                            },5000);
+                            $("#id_cargo").val("");
+                            $("#id_nombre").val("");
+                            $("#id_apellido").val("");
+                            $("#id_ci").val("");
+                        }         
+            },
+            error : function(data) {
+                console.log(data); 
+                
+            }
+        });
+        e.preventDefault();
+    });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends "base/base.html" %}
+
+{% block title %} Home {% endblock title %}
+{% load staticfiles %}
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12 text-center">
+                    <h1 class="display-1 d-block">Sistema de Control de Viaticos y Peajes</h1>
+                    <div class="d-flex justify-content-center ">
+                        <div class="image_outer_container">
+                            <div class="green_icon"></div>
+                            <div class="image_inner_container">
+                                <img src="{% static "images/gobernacion.png" %}" style="width: 45%;">
+                            </div>
+                        </div>
+                    </div>                        
+                </div>
+            </div>            
+        </div>
+  </div>
+{% endblock content %}

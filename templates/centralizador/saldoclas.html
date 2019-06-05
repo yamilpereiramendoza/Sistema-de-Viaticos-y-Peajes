@@ -1,0 +1,169 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+{% load tag_library %}
+{% block title %} Dashboard 1 {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+    <div class="">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                    <h2>Montos Gastados por Secretarias en la Gestion de {{ano}}</h2>
+                    <div class="title_right">
+                        <div class="col-md-4 col-sm-4 col-xs-12 form-group pull-right top_search">
+                        <form action="{% url "viaticos:buscarSecre" %}" method="GET">
+                            {% csrf_token %}
+                            <div class="input-group">
+                            <input type="text" name="id_buscar" id="id_buscar" class="form-control" placeholder="Buscar ...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" disabled>Go!</button>
+                            </span>
+                            </div>
+                        </form>                
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                    
+                        <a href="{% url "viaticos:Reporte_saldoView" %}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-file-pdf-o"></i> EXPORTAR PDF </a>
+                    <div id="ErrorCosto" class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12"  style="display: none;">
+                        <div class="alert" style="background-color: rgba(255, 199, 199, 0.88);border-top: solid 3px rgba(255, 0, 0, 0.88)">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                                ×</button>                                
+                            <p style="color: black;">No existe ningun dato</p>
+                        </div>
+                    </div>
+                    <table id="tablaCosto" class="table table-striped jambo_table bulk_action">
+                        <thead>
+                        <tr class="headings">
+                            <th style="width: 1%">#</th>
+                            <th style="width: 30%">Secretaria</th>                        
+                            <th id="">Monto Actual</th>
+                            <th id="">Barra de progreso</th>
+                            <th>Monto Sobrante</th>
+                            <th id="">Monto Designado</th>                  
+                        </tr>
+                        </thead>
+                        <tbody id="tags1">
+                        {% for s in SaldosPorSecre%}
+                            <tr class="odd pointer" >
+                                <td>{{s.numero}}</td>
+                                <td>
+                                    {{s.secre}}
+                                </td>
+                                <td>                        
+                                    {{s.MontoGasto}}                   
+                                </td>
+                                <td class="project_progress">
+                                    <div class="progress progress_sm">
+                                    {% if s.barra > 16 %}
+                                        <div class="progress-bars bg-green" data-transitiongoal="{{s.barra}}" aria-valuenow="{{s.barra}}" style="background-color: {{s.color}};width: {{s.barra}}%;"></div>
+                                    {%else%}
+                                        <div class="progress-bars bg-green" data-transitiongoal="{{s.barra}}" aria-valuenow="{{s.barra}}" style="background-color: {{s.color}};width: {{s.barra}}%;"></div>
+                                    {% endif %}
+                                    </div>
+                                    <small>
+                                    {% if s.barra > 100 %}
+                                        100% Completo
+                                    {%else%}
+                                        {{s.barra}}% Complete
+                                    {% endif %}
+                                    </small>
+                                </td>
+                                <td>
+                                {% if s.montosobrante|to_int < 0 %}
+                                    Excedido
+                                {%else%}
+                                    {{s.montosobrante}}                        
+                                {% endif %}
+                                </td>
+                                <td>{{s.SaldoSecre}}</td>                      
+                            </tr>
+                        {% endfor%}
+                        </tbody>
+                        <tfoot style="background: rgba(52, 73, 94, 0.94);color: #ECF0F1;">
+                            <tr>
+                            <td colspan="2">                      
+                            </td>
+                            <td>{{total_actual}}</td>
+                            <td class="project_progress">
+                                <div class="progress progress_sm">                        
+                                <div class="progress-bars bg-green" data-transitiongoal="{{total_progreso}}" aria-valuenow="{{total_progreso}}" style="width: {{total_progreso}}%;"></div>                        
+                                </div>
+                                <small>
+                                {% if total_progreso > 100 %}
+                                    100% Completo
+                                {%else%}
+                                    {{total_progreso}}% Complete
+                                {% endif %}
+                                </small>
+                            </td>
+                            
+                            <td>{{total_sobrante}}</td>
+                            <td>{{total_monto}}</td>
+                            </tr>  
+                        </tfoot>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#id_buscar").keyup(function(e){
+        var secre=$("#id_buscar").val();
+        $.ajax({
+        data: {'secre': secre},
+        url: '/viaticos/buscarSecre/',
+        type: 'get',
+        success : function(data) {
+            
+            var html="";
+            //console.log(data.length);
+            $.each(data, function(index, objeto){
+                if (document.getElementById("ErrorCosto").style.display="block"){
+                    document.getElementById("ErrorCosto").style.display="none";
+                    document.getElementById("tablaCosto").style.display="block";
+                }
+                val=""
+                if (objeto.montosobrante<0){
+                    val="Excedido"
+                }
+                else{
+                    val=objeto.montosobrante
+                }
+                html +='<tr class="odd pointer" >';
+                html +='<td>'+objeto.numero+'</td>'      
+                html +='<td>'+objeto.secre+'</td>'
+                html +='<td>'+objeto.MontoGasto+'</td>' 
+                html +='<td class="project_progress">'+ 
+                '<div class="progress progress_sm">'+
+                    '<div class="progress-bars bg-green" data-transitiongoal="'+objeto.barra+" aria-valuenow="+objeto.barra+'" style="background-color:'+objeto.color+';width: '+objeto.barra+'%;"></div>'+
+                '</div>'+
+                '<small>'+ objeto.barra+'% Complete</small>'+'</td>'    
+                html +='<td>'+val+'</td>'
+                html +='<td>'+objeto.SaldoSecre+'</td>'
+                html +='</tr>';          
+            });
+            $('#tags1').html(html);
+        },
+        error : function(data) {
+            if (document.getElementById("ErrorCosto").style.display="none"){
+                document.getElementById("ErrorCosto").style.display="block";
+                document.getElementById("tablaCosto").style.display="none";            
+            }
+            //console.log(data);
+        } 
+        });
+    
+    });
+    </script>
+{% endblock content %}

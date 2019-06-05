@@ -1,0 +1,67 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        {% if object %}
+            <form role="form" action="{% url 'administrador:update_monto' object.id %}" method="post">
+        {% else %}
+            <form role="form" action="{% url 'administrador:crear_tipo_monto' %}" method="post">
+        {% endif %}
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">x</button>
+                <h3>Registro de Nuevo Monto</h3>
+            </div>
+            <div class="modal-body">              
+                {% csrf_token %} 
+                <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12" {% if form.errors %} style="display: block;" {% else%} style="display: none;" {%endif%}  >
+                    <div class="alert" style="background-color: #fff0e5;border-top: solid 3px rgba(255, 143, 4, 0.88);">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                            ×</button>                                
+                        <p style="color: black;"><p>Se encontro errores al Introducir los datos</p>
+                            {{ form.non_field_errors }}
+                            <ul>
+                                {% for field in form %}
+                                    {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                                {% endfor %}
+                            </ul>
+                        </p>
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">NOMBRE.:</label>
+                            {{form.Nombre}}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">CANTIDAD.:</label>                       
+                            {{form.Cantidad}}                      
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">DESTINO.:</label>
+                    {{form.identificacion}}
+                </div>                                                        
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">TIPO VIAJENTE.:</label>
+                    {{form.Tipo_viatico}}
+                </div>
+
+                <div class="modal-footer">
+                    <div style="text-align: center">
+                        {% if update%}                
+                            <input type="submit" class="btn btn-success" name="submit" value="Actualizar Monto">
+                        {%else%}
+                            <input type="submit" class="btn btn-primary" name="submit" value="Crear Monto">
+                        {%endif%}
+                        
+                        <button type="button" class="btn btn-default" onclick="return cerrar_modal()">
+                                Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>                
+        </form>
+    </div>
+</div>
